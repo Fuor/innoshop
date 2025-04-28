@@ -9,8 +9,8 @@
 
 namespace Plugin\Carousel\Models;
 
-use InnoCMS\Common\Models\BaseModel;
-use InnoCMS\Common\Models\Page;
+use InnoShop\Common\Models\BaseModel;
+use InnoShop\Common\Models\Page;
 
 class Carousel extends BaseModel
 {

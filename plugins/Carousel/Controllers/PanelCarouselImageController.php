@@ -10,7 +10,7 @@
 namespace Plugin\Carousel\Controllers;
 
 use Illuminate\Http\Request;
-use InnoCMS\Panel\Controllers\BaseController;
+use InnoShop\Panel\Controllers\BaseController;
 use Plugin\Carousel\Models\Carousel;
 use Plugin\Carousel\Models\CarouselImage;
 use Plugin\Carousel\Repositories\CarouselImageRepo;

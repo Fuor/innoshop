@@ -9,7 +9,7 @@
 
 namespace Plugin\Carousel\Models;
 
-use InnoCMS\Common\Models\BaseModel;
+use InnoShop\Common\Models\BaseModel;
 
 class CarouselImage extends BaseModel
 {

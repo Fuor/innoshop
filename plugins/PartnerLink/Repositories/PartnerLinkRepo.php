@@ -9,7 +9,7 @@
 
 namespace Plugin\PartnerLink\Repositories;
 
-use InnoCMS\Common\Repositories\BaseRepo;
+use InnoShop\Common\Repositories\BaseRepo;
 use Plugin\PartnerLink\Models\PartnerLink;
 
 class PartnerLinkRepo extends BaseRepo

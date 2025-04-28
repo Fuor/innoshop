@@ -9,7 +9,7 @@
 
 namespace Plugin\Carousel\Repositories;
 
-use InnoCMS\Common\Repositories\BaseRepo;
+use InnoShop\Common\Repositories\BaseRepo;
 use Plugin\Carousel\Models\Carousel;
 
 class CarouselRepo extends BaseRepo

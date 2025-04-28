@@ -9,7 +9,7 @@
 
 namespace Plugin\Carousel\Models;
 
-use InnoCMS\Common\Models\Page as InnoCmsPage;
+use InnoShop\Common\Models\Page as InnoCmsPage;
 
 class Page extends InnoCmsPage
 {

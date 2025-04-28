@@ -9,7 +9,7 @@
 
 namespace Plugin\PartnerLink\Models;
 
-use InnoCMS\Common\Models\BaseModel;
+use InnoShop\Common\Models\BaseModel;
 
 class PartnerLink extends BaseModel
 {

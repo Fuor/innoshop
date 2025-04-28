@@ -10,19 +10,19 @@
 return [
     [
         'name'      => 'type',
-        'label'     => '类型',
+        'label'     => '计算方式',
         'label_key' => 'common.type',
         'type'      => 'select',
         'options'   => [
-            ['value' => 'fixed', 'label_key' => 'common.fixed'],
-            ['value' => 'percent', 'label_key' => 'common.percent'],
+            ['value' => 'fixed', 'label_key' => 'common.fixed', 'label' => '固定运费'],
+            ['value' => 'percent', 'label_key' => 'common.percent', 'label' => '百分比'],
         ],
         'required'  => true,
         'rules'     => 'required',
     ],
     [
         'name'      => 'value',
-        'label'     => '值',
+        'label'     => '运费值',
         'label_key' => 'common.value',
         'type'      => 'string',
         'required'  => true,

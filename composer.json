@@ -31,7 +31,8 @@
         "spatie/laravel-sitemap": "^7.3",
         "tormjens/eventy": "^0.9.3",
         "w7corp/easywechat": "^6.7",
-        "wikimedia/composer-merge-plugin": "^2.1"
+        "wikimedia/composer-merge-plugin": "^2.1",
+        "jenssegers/agent": "^2.6"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",

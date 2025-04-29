@@ -23,7 +23,7 @@ class Boot
 
     public function init(): void
     {
-        listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
+        listen_hook_filter('panel.component.sidebar.settings.routes', function ($data) {
             $data[] = [
                 'route' => 'carousels.index',
                 'title' => '轮播图',

@@ -17,10 +17,13 @@ class Boot
     public function init(): void
     {
 
-        \Illuminate\Support\Facades\Log::info('开始注册钩子');
+        $eventy = app('eventy');
 
-        listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
-            \Illuminate\Support\Facades\Log::info('钩子执行', [
+        // 直接在 filter 属性中添加回调
+        $tag = 'component.sidebar.plugin.routes';
+        $priority = 10;
+        $callback = function ($data) {
+            \Illuminate\Support\Facades\Log::info('钩子执行前', [
                 'data' => $data
             ]);
 
@@ -31,22 +34,29 @@ class Boot
                 'sort' => 100
             ];
 
-            if (is_array($data)) {
-                $data[] = $menuItem;
-            } else {
-                $data = [$menuItem];
-            }
+            $result = is_array($data) ? array_merge($data, [$menuItem]) : [$menuItem];
 
-            return $data;
-        });
+            \Illuminate\Support\Facades\Log::info('钩子执行后', [
+                'result' => $result
+            ]);
 
-        // 检查注册后的状态
-        $eventy = app('eventy');
+            return $result;
+        };
+
+        // 手动添加过滤器
         $reflection = new \ReflectionClass($eventy);
         $filterProp = $reflection->getProperty('filter');
         $filterProp->setAccessible(true);
 
-        \Illuminate\Support\Facades\Log::info('注册后的钩子状态', [
+        $filters = $filterProp->getValue($eventy);
+        if (!isset($filters['TorMorten\Eventy\Filter'][$tag][$priority])) {
+            $filters['TorMorten\Eventy\Filter'][$tag][$priority] = [];
+        }
+        $filters['TorMorten\Eventy\Filter'][$tag][$priority][] = $callback;
+
+        $filterProp->setValue($eventy, $filters);
+
+        \Illuminate\Support\Facades\Log::info('手动注册后的钩子状态', [
             'filters' => $filterProp->getValue($eventy)
         ]);
 

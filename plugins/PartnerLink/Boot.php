@@ -16,23 +16,17 @@ class Boot
 {
     public function init(): void
     {
-        // 1. 先检查条件是否满足
-        var_dump([
+        // 使用 Laravel 日志
+        \Illuminate\Support\Facades\Log::info('Boot init called', [
             'debug_enabled' => config('app.debug'),
-            'has_debugbar' => has_debugbar(),
-            'hook_name' => 'component.sidebar.plugin.routes'
+            'has_debugbar' => has_debugbar()
         ]);
 
-        if (config('app.debug') && has_debugbar()) {
-            Debugbar::info('Boot init 开始执行');
-        }
-
         listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
-            if (config('app.debug') && has_debugbar()) {
-                Debugbar::info('侧边栏钩子被触发', [
-                    '当前数据' => $data
-                ]);
-            }
+            // 在钩子中记录日志
+            \Illuminate\Support\Facades\Log::info('Sidebar hook triggered', [
+                'data' => $data
+            ]);
 
             $menuItem = [
                 'route' => 'partner_links.index',

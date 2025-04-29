@@ -17,13 +17,31 @@ class Boot
     public function init(): void
     {
         if (config('app.debug') && has_debugbar()) {
-            Debugbar::log('PartnerLink Boot init called');
+            Debugbar::info('Boot init 开始执行');
         }
+
         listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
-            $data[] = [
+            if (config('app.debug') && has_debugbar()) {
+                Debugbar::info('侧边栏钩子被触发', [
+                    '当前数据' => $data
+                ]);
+            }
+
+            $menuItem = [
                 'route' => 'partner_links.index',
                 'title' => '友情链接',
+                'icon' => 'link',
+                'sort' => 100
             ];
+
+            $data[] = $menuItem;
+
+            if (config('app.debug') && has_debugbar()) {
+                Debugbar::info('添加菜单后的数据', [
+                    '新增项' => $menuItem,
+                    '最终数据' => $data
+                ]);
+            }
 
             return $data;
         });

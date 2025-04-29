@@ -16,9 +16,12 @@ class Boot
 {
     public function init(): void
     {
-        \Illuminate\Support\Facades\Log::info('eventy 实例信息', [
-            'class' => get_class(app('eventy')),
-            'methods' => get_class_methods(app('eventy'))
+
+        $eventy = app('eventy');
+
+        // 在注册钩子前检查已有的过滤器
+        \Illuminate\Support\Facades\Log::info('注册前的过滤器', [
+            'filters' => $eventy->getFilter()  // 如果有这个方法的话
         ]);
 
         listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
@@ -45,6 +48,11 @@ class Boot
 
             return $data;
         });
+
+        // 检查钩子是否已注册
+        \Illuminate\Support\Facades\Log::info('注册后的过滤器', [
+            'filters' => $eventy->getFilter()  // 如果有这个方法的话
+        ]);
 
         listen_blade_insert('layouts.footer.top', function ($data) {
             $data['links'] = PartnerLink::query()->where('active', 1)->limit(10)->get();

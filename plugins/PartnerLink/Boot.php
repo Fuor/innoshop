@@ -16,6 +16,13 @@ class Boot
 {
     public function init(): void
     {
+        // 1. 先检查条件是否满足
+        var_dump([
+            'debug_enabled' => config('app.debug'),
+            'has_debugbar' => has_debugbar(),
+            'hook_name' => 'component.sidebar.plugin.routes'
+        ]);
+
         if (config('app.debug') && has_debugbar()) {
             Debugbar::info('Boot init 开始执行');
         }

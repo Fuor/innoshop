@@ -17,18 +17,17 @@ class Boot
     public function init(): void
     {
 
+
         $eventy = app('eventy');
 
-        // 在注册钩子前检查已有的过滤器
-        \Illuminate\Support\Facades\Log::info('注册前的过滤器', [
-            'filters' => $eventy->getFilter()  // 如果有这个方法的话
+        \Illuminate\Support\Facades\Log::info('注册前的 Eventy 状态', [
+            'filters' => $eventy->getFilter(),
+            'instance' => spl_object_id($eventy)
         ]);
 
-        listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
-            // 在钩子中记录日志
-            \Illuminate\Support\Facades\Log::info('Sidebar hook triggered', [
-                'data' => $data
-            ]);
+        // 直接调用 addFilter 检查是否能成功注册
+        $eventy->addFilter('component.sidebar.plugin.routes', function ($data) {
+            \Illuminate\Support\Facades\Log::info('钩子回调开始执行');
 
             $menuItem = [
                 'route' => 'partner_links.index',
@@ -39,19 +38,16 @@ class Boot
 
             $data[] = $menuItem;
 
-            if (config('app.debug') && has_debugbar()) {
-                Debugbar::info('添加菜单后的数据', [
-                    '新增项' => $menuItem,
-                    '最终数据' => $data
-                ]);
-            }
+            \Illuminate\Support\Facades\Log::info('钩子回调执行完成', [
+                'data' => $data
+            ]);
 
             return $data;
         });
 
-        // 检查钩子是否已注册
-        \Illuminate\Support\Facades\Log::info('注册后的过滤器', [
-            'filters' => $eventy->getFilter()  // 如果有这个方法的话
+        \Illuminate\Support\Facades\Log::info('注册后的 Eventy 状态', [
+            'filters' => $eventy->getFilter(),
+            'instance' => spl_object_id($eventy)
         ]);
 
         listen_blade_insert('layouts.footer.top', function ($data) {

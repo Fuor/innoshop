@@ -16,10 +16,9 @@ class Boot
 {
     public function init(): void
     {
-        // 使用 Laravel 日志
-        \Illuminate\Support\Facades\Log::info('Boot init called', [
-            'debug_enabled' => config('app.debug'),
-            'has_debugbar' => has_debugbar()
+        \Illuminate\Support\Facades\Log::info('eventy 实例信息', [
+            'class' => get_class(app('eventy')),
+            'methods' => get_class_methods(app('eventy'))
         ]);
 
         listen_hook_filter('component.sidebar.plugin.routes', function ($data) {

@@ -15,7 +15,7 @@ class Boot
 {
     public function init(): void
     {
-        listen_hook_filter('panel.component.sidebar.settings.routes', function ($data) {
+        listen_hook_filter('panel.component.sidebar.setting.routes', function ($data) {
             $data[] = [
                 'route' => 'partner_links.index',
                 'title' => '友情链接',

@@ -44,7 +44,7 @@
         @endforeach
       </tbody>
       @else
-      <tbody><tr><td colspan="5"><x-panel-no-data /></td></tr></tbody>
+      <tbody><tr><td colspan="5"><x-common-no-data :width="240 /></td></tr></tbody>
       @endif
     </table>
     {{ $items->withQueryString()->links('panel::vendor/pagination/bootstrap-4') }}

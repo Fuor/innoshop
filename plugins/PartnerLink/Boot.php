@@ -15,15 +15,43 @@ class Boot
 {
     public function init(): void
     {
+//        listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
+//            $data[] = [
+//                'route' => 'partner_links.index',
+//                'title' => '友情链接',
+//            ];
+//
+//            return $data;
+//        });
+
         listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
-            \Log::info('Sidebar hook called', ['data' => $data]);
+            \Log::info('Sidebar hook called', [
+                'data' => $data,
+                'backtrace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2),
+                'time' => now()->toDateTimeString(),
+                'memory' => memory_get_usage(true)
+            ]);
 
-            $data[] = [
-                'route' => 'partner_links.index',
-                'title' => '友情链接',
-            ];
+            try {
+                $newItem = [
+                    'route' => 'partner_links.index',
+                    'title' => '友情链接',
+                ];
+                $data[] = $newItem;
 
-            return $data;
+                \Log::info('After adding menu item', [
+                    'newItem' => $newItem,
+                    'finalData' => $data
+                ]);
+
+                return $data;
+            } catch (\Exception $e) {
+                \Log::error('Error in sidebar hook', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                throw $e;
+            }
         });
 
         listen_blade_insert('layouts.footer.top', function ($data) {

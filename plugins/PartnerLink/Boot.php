@@ -15,6 +15,7 @@ class Boot
 {
     public function init(): void
     {
+        \Log::info('PartnerLink Boot init called');
 //        listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
 //            $data[] = [
 //                'route' => 'partner_links.index',

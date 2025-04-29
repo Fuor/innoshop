@@ -16,6 +16,8 @@ class Boot
     public function init(): void
     {
         listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
+            \Log::info('Sidebar hook called', ['data' => $data]);
+
             $data[] = [
                 'route' => 'partner_links.index',
                 'title' => '友情链接',

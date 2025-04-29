@@ -11,38 +11,38 @@
                 @csrf
                 @method($item->id ? 'PUT' : 'POST')
                 <div class="row">
-                    <x-panel-form-switch-radio title="是否启用" name="active" :value="old('active', $item->active ?? true)"
+                    <x-common-form-switch-radio title="是否启用" name="active" :value="old('active', $item->active ?? true)"
                                                placeholder="是否启用"/>
                     <div class="col-6">
-                        <x-panel-form-input title="轮播图名称" name="name" :value="old('name', $item->name ?? '')"
+                        <x-common-form-input title="轮播图名称" name="name" :value="old('name', $item->name ?? '')"
                                             placeholder="轮播图名称" required="required"/>
-                        <x-panel-form-select title="所在页面" name="page_id" :value="old('page_id', $item->page_id ?? 0)"
+                        <x-common-form-select title="所在页面" name="page_id" :value="old('page_id', $item->page_id ?? 0)"
                                              :options="$pages" key="value" label="label"/>
-                        <x-panel-form-select title="轮播图所在位置" name="position" :value="old('position', $item->position ?? 'top')"
+                        <x-common-form-select title="轮播图所在位置" name="position" :value="old('position', $item->position ?? 'top')"
                                              :options="$positions" key="value" label="label"/>
-                        <x-panel-form-select title="轮播图风格" name="style" :value="old('style', $item->style ?? 'container-fluid')"
+                        <x-common-form-select title="轮播图风格" name="style" :value="old('style', $item->style ?? 'container-fluid')"
                                              :options="$styles" key="value" label="label"/>
-                        <x-panel-form-input title="轮播图高度" name="height"
+                        <x-common-form-input title="轮播图高度" name="height"
                                             :value="old('height', $item->height ? : ($item->style='container-fluid' ? 600 :400))"
                                             placeholder="建议100%全屏600，响应式400"/>
-                        <x-panel-form-input title="轮播图排序" name="order_index"
+                        <x-common-form-input title="轮播图排序" name="order_index"
                                             :value="old('order_index', $item->order_index ?? 0)"
                                             placeholder="默认0"/>
-                        <x-panel-form-switch-radio title="启用自动播放" name="auto_play" :value="old('auto_play', $item->auto_play ?? true)"
+                        <x-common-form-switch-radio title="启用自动播放" name="auto_play" :value="old('auto_play', $item->auto_play ?? true)"
                                                    placeholder="是否启用"/>
                     </div>
                     <div class="col-6">
-                        <x-panel-form-switch-radio title="启用导航按钮" name="with_controls" :value="old('with_controls', $item->with_controls ?? true)"
+                        <x-common-form-switch-radio title="启用导航按钮" name="with_controls" :value="old('with_controls', $item->with_controls ?? true)"
                                                    placeholder="是否启用"/>
-                        <x-panel-form-switch-radio title="启用指示器" name="with_indicators" :value="old('with_indicators', $item->with_indicators ?? true)"
+                        <x-common-form-switch-radio title="启用指示器" name="with_indicators" :value="old('with_indicators', $item->with_indicators ?? true)"
                                                    placeholder="是否启用"/>
-                        <x-panel-form-switch-radio title="启用文字介绍" name="with_captions" :value="old('with_captions', $item->with_captions ?? false)"
+                        <x-common-form-switch-radio title="启用文字介绍" name="with_captions" :value="old('with_captions', $item->with_captions ?? false)"
                                                    placeholder="是否启用"/>
-                        <x-panel-form-switch-radio title="启用交叉渐变" name="cross_fade" :value="old('cross_fade', $item->cross_fade ?? false)"
+                        <x-common-form-switch-radio title="启用交叉渐变" name="cross_fade" :value="old('cross_fade', $item->cross_fade ?? false)"
                                                    placeholder="是否启用"/>
-                        <x-panel-form-switch-radio title="黑暗模式" name="dark_variant" :value="old('dark_variant', $item->dark_variant ?? false)"
+                        <x-common-form-switch-radio title="黑暗模式" name="dark_variant" :value="old('dark_variant', $item->dark_variant ?? false)"
                                                    placeholder="是否启用"/>
-                        <x-panel-form-switch-radio title="触控滑动" name="touch_swiping" :value="old('touch_swiping', $item->touch_swiping ?? true)"
+                        <x-common-form-switch-radio title="触控滑动" name="touch_swiping" :value="old('touch_swiping', $item->touch_swiping ?? true)"
                                                    placeholder="是否启用"/>
                     </div>
                 </div>
@@ -68,17 +68,17 @@
                                      <div class="col-6">
                                          <input type="hidden" name="carousel_id" value="{{$item->id}}">
                                          <input type="hidden" name="image_url" value="{{old('image_url', $carouselImage->image_url)}}"></input>
-                                         <x-panel-form-input title="轮播图标题" name="title" :value="old('title', $carouselImage->title ?? '')"
+                                         <x-common-form-input title="轮播图标题" name="title" :value="old('title', $carouselImage->title ?? '')"
                                                              placeholder="轮播图标题"/>
-                                         <x-panel-form-input title="轮播图描述" name="description" :value="old('description', $carouselImage->description ?? '')"
+                                         <x-common-form-input title="轮播图描述" name="description" :value="old('description', $carouselImage->description ?? '')"
                                                              placeholder="轮播图描述"/>
-                                         <x-panel-form-input title="超链接地址" name="target_url" :value="old('target_url', $carouselImage->target_url ?? '')"
+                                         <x-common-form-input title="超链接地址" name="target_url" :value="old('target_url', $carouselImage->target_url ?? '')"
                                                              placeholder="超链接地址"/>
-                                         <x-panel-form-input title="排序" name="position" :value="old('position', $carouselImage->position ?? '')"
+                                         <x-common-form-input title="排序" name="position" :value="old('position', $carouselImage->position ?? '')"
                                                              placeholder="排序"/>
-                                         <x-panel-form-switch-radio title="是否启用" name="active" :value="old('active', $carouselImage->active ?? true)"
+                                         <x-common-form-switch-radio title="是否启用" name="active" :value="old('active', $carouselImage->active ?? true)"
                                                                     placeholder="是否启用"/>
-                                         <x-panel-form-input title="轮播图过渡时长" name="item_interval" :value="old('item_interval', $carouselImage->item_interval ?? 5000)"
+                                         <x-common-form-input title="轮播图过渡时长" name="item_interval" :value="old('item_interval', $carouselImage->item_interval ?? 5000)"
                                                              placeholder="轮播图名称"/>
                                      </div>
                                  </div>

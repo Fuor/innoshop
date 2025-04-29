@@ -16,6 +16,20 @@ class Boot
     public function init(): void
     {
         \Log::info('PartnerLink Boot init called');
+
+        add_filter('panel.sidebar.routes', function ($data) {
+            \Log::info('Sidebar hook triggered', ['current_data' => $data]);
+
+            $data[] = [
+                'route' => 'partner_links.index',
+                'title' => '友情链接',
+                'icon' => 'link', // 添加图标
+                'sort' => 100    // 添加排序
+            ];
+
+            return $data;
+        });
+
 //        listen_hook_filter('component.sidebar.plugin.routes', function ($data) {
 //            $data[] = [
 //                'route' => 'partner_links.index',

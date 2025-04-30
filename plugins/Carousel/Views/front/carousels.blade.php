@@ -1,7 +1,7 @@
 @pushonce('header')
     <style>
         .carousel-banner{
-            padding-top: 80px;
+            padding-top: 0px;
         }
     </style>
 @endpushonce

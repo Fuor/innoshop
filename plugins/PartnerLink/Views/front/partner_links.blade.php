@@ -13,7 +13,7 @@
 
     @if ($linksLogo->count())
     <ul class="inform-wrap mb-4 list-unstyled d-flex flex-wrap align-items-center">
-      <li><span><i class="bi bi-link-45deg"></i> 友情链接：</span></li>
+      <li class="me-2"><span><i class="bi bi-link-45deg"></i>{{ __('PartnerLink::route.title')}} : </span></li>
       @foreach($linksLogo as $link)
       <li class="me-2">
         <a href="{{ $link->url }}" target="_blank">
@@ -26,7 +26,7 @@
 
     @if ($linksNoLogo->count())
     <ul class="inform-wrap mb-4 list-unstyled d-flex flex-wrap align-items-center">
-      <li><span><i class="bi bi-link-45deg"></i> 友情链接：</span></li>
+      <li class="me-2"><span><i class="bi bi-link-45deg"></i>{{ __('PartnerLink::route.title')}} : </span></li>
       @foreach($linksNoLogo as $link)
       <li class="me-2">
         <a href="{{ $link->url }}" target="_blank">{{ $link->name }}</a>

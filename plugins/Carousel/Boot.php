@@ -23,6 +23,14 @@ class Boot
 
     public function init(): void
     {
+        // 在插件的 ServiceProvider 的 boot 方法中注册钩子
+        listen_hook_filter('home.index.data', function ($data) {
+            // 将 slideshow 数据置空
+            $data['slideshow'] = [];
+
+            return $data;
+        });
+
         listen_hook_filter('panel.component.sidebar.setting.routes', function ($data) {
             $data[] = [
                 'route' => 'carousels.index',
@@ -46,7 +54,7 @@ class Boot
             $this->agent          = new Agent();
 
             if ($this->topCarousel->count()) {
-                listen_blade_insert('page.content.top', function ($data) {
+                listen_blade_insert('home.content.top', function ($data) {
                     $data['carousels'] = $this->topCarousel;
                     $data['agent']     = $this->agent;
 
@@ -54,7 +62,7 @@ class Boot
                 });
             }
             if ($this->bottomCarousel->count()) {
-                listen_blade_insert('page.content.bottom', function ($data) {
+                listen_blade_insert('home.content.bottom', function ($data) {
                     $data['carousels'] = $this->bottomCarousel;
                     $data['agent']     = $this->agent;
 

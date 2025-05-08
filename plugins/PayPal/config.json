@@ -1,0 +1,18 @@
+{
+  "code": "paypal",
+  "type": "billing",
+  "name": {
+    "en": "PayPal",
+    "zh-cn": "PayPal支付"
+  },
+  "description": {
+    "en": "Pay via PayPal, accepting credit cards and PayPal balance",
+    "zh-cn": "通过PayPal支付，支持信用卡和PayPal余额"
+  },
+  "icon": "/plugins/PayPal/Public/images/paypal-logo.png",
+  "version": "1.0.0",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com"
+  }
+}

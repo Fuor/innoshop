@@ -2,7 +2,7 @@
   <div class="product-grid-item {{ request('style_list') ?? '' }}">
     <div class="image">
       <a href="{{ $product->url }}">
-        <img src="{{ $product->image_url }}" class="img-fluid">
+        <img src="{{ $product->image_url }}" class="img-fluid" alt="{{ $product->fallbackName() }}">
       </a>
       <div class="wishlist-container add-wishlist" data-in-wishlist="{{ $product->hasFavorite() }}"
            data-id="{{ $product->id }}" data-price="{{ $product->masterSku->price }}">

@@ -24,7 +24,7 @@ class Boot
             return $data;
         });
 
-        listen_blade_insert('layout.footer.top', function ($data) {
+        listen_blade_insert('home.content.bottom', function ($data) {
             $data['links'] = PartnerLink::query()->where('active', 1)->limit(10)->get();
 
             return view('PartnerLink::front.partner_links', $data);

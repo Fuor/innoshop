@@ -2,7 +2,7 @@
   <div class="blog-item">
     <div class="image">
       <a href="{{ $item->url }}">
-        <img src="{{ $item->translation->image }}" class="img-fluid">
+        <img src="{{ $item->translation->image }}" class="img-fluid" alt="{{ $item->translation->title }}">
       </a>
     </div>
     <div class="blog-item-info">

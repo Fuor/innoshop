@@ -1,10 +1,12 @@
 @extends('layouts.app')
 @section('body-class', 'page-home')
 
-@push('header')
-  <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
-  <link rel="stylesheet" href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}">
-@endpush
+@if ($slideshow)
+  @push('header')
+    <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}">
+  @endpush
+@endif
 
 @section('content')
 
@@ -19,7 +21,7 @@
               @if ($slide['image'][front_locale_code()] ?? false)
                 <div class="swiper-slide">
                   <a href="{{ $slide['link'] ?: 'javascript:void(0)' }}"><img
-                      src="{{ image_origin($slide['image'][front_locale_code()]) }}" class="img-fluid"></a>
+                      src="{{ image_origin($slide['image'][front_locale_code()]) }}" class="img-fluid" alt="locale code"></a>
                 </div>
               @endif
             @endforeach
@@ -50,10 +52,10 @@
           <div class="container">
             <div class="row">
               <div class="col-12 col-md-4 mb-2 mb-lg-0">
-                <a href=""><img src="{{ asset('images/demo/banner/banner-3.jpg') }}" class="img-fluid"></a>
+                <a href=""><img src="{{ asset('images/demo/banner/banner-3.jpg') }}" class="img-fluid" alt="banner"></a>
               </div>
               <div class="col-12 col-md-8">
-                <a href=""><img src="{{ asset('images/demo/banner/banner-4.jpg') }}" class="img-fluid"></a>
+                <a href=""><img src="{{ asset('images/demo/banner/banner-4.jpg') }}" class="img-fluid" alt="banner"></a>
               </div>
             </div>
           </div>
@@ -102,7 +104,7 @@
       <section class="module-line">
         <div class="module-banner-1">
           <div class="container">
-            <a href=""><img src="{{ asset('images/demo/banner/banner-5.jpg') }}" class="img-fluid"></a>
+            <a href=""><img src="{{ asset('images/demo/banner/banner-5.jpg') }}" class="img-fluid" alt="banner"></a>
           </div>
         </div>
       </section>

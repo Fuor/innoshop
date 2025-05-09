@@ -34,7 +34,7 @@
                       <div class="swiper-slide">
                         <a href="{{ image_resize($image, 600, 600) }}" data-pswp-width="800"
                            data-pswp-height="800">
-                          <img src="{{ image_resize($image) }}" class="img-fluid">
+                          <img src="{{ image_resize($image) }}" class="img-fluid" alt="{{ $product->fallbackName() }}">
                         </a>
                       </div>
                     @endforeach
@@ -49,7 +49,7 @@
             @endif
 
             <div class="main-product-img">
-              <img src="{{ $product->image_url }}" class="img-fluid">
+              <img src="{{ $product->image_url }}" class="img-fluid" alt="{{ $product->fallbackName() }}">
             </div>
           </div>
         </div>

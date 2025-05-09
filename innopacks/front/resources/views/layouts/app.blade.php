@@ -74,6 +74,7 @@
   @endif
 
   @stack('footer')
+  @stack('scripts')
 </body>
 
 </html>

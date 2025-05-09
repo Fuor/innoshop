@@ -6,12 +6,12 @@
       <div class="language-switch d-flex align-items-center">
         <div class="dropdown">
           <a class="btn dropdown-toggle" href="javascript:void(0)">
-            <img src="{{ asset($current_locale->image) }}" class="img-fluid"> {{ $current_locale->name }}
+            <img src="{{ asset($current_locale->image) }}" class="img-fluid" alt="current locale"> {{ $current_locale->name }}
           </a>
           <div class="dropdown-menu">
             @foreach (locales() as $locale)
               <a class="dropdown-item d-flex" href="{{ front_route('locales.switch', ['code' => $locale->code]) }}">
-                <div class="wh-20 me-2"><img src="{{ image_origin($locale['image']) }}" class="img-fluid border">
+                <div class="wh-20 me-2"><img src="{{ image_origin($locale['image']) }}" class="img-fluid border" alt="locales switch">
                 </div>
                 {{ $locale->name }}
               </a>
@@ -47,7 +47,7 @@
       <div class="left">
         <h1 class="logo">
           <a href="{{ front_route('home.index') }}">
-            <img src="{{ image_origin(system_setting('front_logo', 'images/logo.svg')) }}" class="img-fluid">
+            <img src="{{ image_origin(system_setting('front_logo', 'images/logo.svg')) }}" class="img-fluid" alt="logo">
           </a>
         </h1>
         <div class="menu">
@@ -94,13 +94,13 @@
         <form action="{{ front_route('products.index') }}" method="get" class="search-group">
           <input type="text" class="form-control" name="keyword" placeholder="{{ __('front/common.search') }}"
                  value="{{ request('keyword') }}">
-          <button type="submit" class="btn"><i class="bi bi-search"></i></button>
+          <button type="submit" class="btn" aria-label="search"><i class="bi bi-search"></i></button>
         </form>
         <div class="icons">
           <div class="item">
             <div class="dropdown account-icon">
               <a class="btn dropdown-toggle px-0" href="{{ front_route('account.index') }}">
-                <img src="{{ asset('images/icons/account.svg') }}" class="img-fluid">
+                <img src="{{ asset('images/icons/account.svg') }}" class="img-fluid" alt="account">
               </a>
 
               <div class="dropdown-menu dropdown-menu-end">
@@ -123,13 +123,13 @@
           </div>
           <div class="item">
             <a href="{{ account_route('favorites.index') }}"><img src="{{ asset('images/icons/love.svg') }}"
-                                                                  class="img-fluid"><span
+                                                                  class="img-fluid" alt="favorite"><span
                 class="icon-quantity">{{ $fav_total }}</span></a>
           </div>
           <div class="item">
             <a href="javascript:void(0)" class="header-cart-icon" data-bs-toggle="offcanvas"
                data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas"><img src="{{ asset('images/icons/cart.svg') }}"
-                                                                                  class="img-fluid"><span
+                                                                                  class="img-fluid" alt="cart"><span
                 class="icon-quantity">0</span></a>
           </div>
           @hookinsert('layouts.header.cart.after')
@@ -139,18 +139,18 @@
   </div>
   <div class="header-mobile">
     <div class="mb-icon" data-bs-toggle="offcanvas" data-bs-target="#mobile-menu-offcanvas"
-         aria-controls="offcanvasExample">
+         aria-controls="mobile-menu-offcanvas">
       <i class="bi bi-list"></i>
     </div>
 
     <div class="logo">
       <a href="{{ front_route('home.index') }}">
-        <img src="{{ image_origin(system_setting('front_logo', 'images/logo.svg')) }}" class="img-fluid">
+        <img src="{{ image_origin(system_setting('front_logo', 'images/logo.svg')) }}" class="img-fluid" alt="logo">
       </a>
     </div>
 
     <a href="{{ front_route('carts.index') }}" class="header-cart-icon"><img src="{{ asset('images/icons/cart.svg') }}"
-                                                                             class="img-fluid"><span
+                                                                             class="img-fluid" alt="cart"><span
         class="icon-quantity">0</span></a>
 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="mobile-menu-offcanvas">
@@ -160,7 +160,7 @@
           <button type="submit" class="btn"><i class="bi bi-search"></i></button>
         </form>
         <a class="account-icon" href="{{ front_route('account.index') }}">
-          <img src="{{ asset('images/icons/account.svg') }}" class="img-fluid">
+          <img src="{{ asset('images/icons/account.svg') }}" class="img-fluid" alt="account">
         </a>
       </div>
       <div class="close-offcanvas" data-bs-dismiss="offcanvas"><i class="bi bi-chevron-compact-left"></i></div>

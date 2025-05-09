@@ -26,7 +26,7 @@
                 <div class="image">
                   <div class="cancel-favorite" data-id="{{ $product->id }}" data-in-wishlist="1"><i class="bi bi-trash"></i></div>
                   <a href="{{ $product->url }}">
-                    <img src="{{ $product->image_url }}" class="img-fluid">
+                    <img src="{{ $product->image_url }}" class="img-fluid" alt="{{ $product->translation->name }}">
                   </a>
                 </div>
                 <div class="product-item-info">

@@ -45,9 +45,11 @@
   <div class="header-desktop">
     <div class="container d-flex justify-content-between align-items-center">
       <div class="left">
-        <h1 class="logo">
-          <a href="{{ front_route('home.index') }}">
-            <img src="{{ image_origin(system_setting('front_logo', 'images/logo.svg')) }}" class="img-fluid" alt="logo">
+        <h1 class="logo" style="height: 48px; display: flex; align-items: center;">
+          <a href="{{ front_route('home.index') }}" style="display: block; height: 100%;">
+            <img src="{{ image_origin(system_setting('front_logo', 'images/logo.svg')) }}" class="img-fluid" alt="logo"
+                 style="height: 100%; width: auto; object-fit: contain"
+            >
           </a>
         </h1>
         <div class="menu">
@@ -143,9 +145,12 @@
       <i class="bi bi-list"></i>
     </div>
 
-    <div class="logo">
-      <a href="{{ front_route('home.index') }}">
-        <img src="{{ image_origin(system_setting('front_logo', 'images/logo.svg')) }}" class="img-fluid" alt="logo">
+    <div class="logo" style="height: 40px; display: flex; align-items: center;">
+      <a href="{{ front_route('home.index') }}" style="display: block; height: 100%;">
+        <img src="{{ image_origin(system_setting('front_logo', 'images/logo.svg')) }}"
+             class="img-fluid"
+             alt="logo"
+             style="height: 100%; width: auto; object-fit: contain">
       </a>
     </div>
 

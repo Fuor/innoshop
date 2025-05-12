@@ -37,6 +37,10 @@
                                                 @endif
                                              @else
                                                  style="width: 100% !important; height: 180px !important;  object-fit: cover"
+{{--                                                 loading="lazy"--}}
+                                                 decoding="async"
+                                                 width="1000"
+                                                 height="180"
                                              @endif
 
                                         >

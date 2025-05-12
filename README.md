@@ -81,3 +81,5 @@ Thanks to the [Contributors](https://github.com/innocommerce/innoshop/graphs/con
 <a href="https://github.com/NeftaliYagua"><img class="avatar-img" width="32px" height="32px" src="https://github.com/NeftaliYagua.png"/></a>
 <a href="https://github.com/lunan689"><img class="avatar-img" width="32px" height="32px" src="https://github.com/lunan689.png"/></a>
 <a href="https://github.com/LOLU66"><img class="avatar-img" width="32px" height="32px" src="https://github.com/LOLU66.png"/></a>
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Fuor/innoshop)

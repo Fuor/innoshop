@@ -1,10 +1,10 @@
 @push('header')
-    <script src="{{ asset('vendor/vue/2.7/vue.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('vendor/element-ui/element-ui.css') }}">
-    <script src="{{ asset('vendor/element-ui/element-ui.js') }}"></script>
-    <link rel="stylesheet" href="{{  asset('vendor/cropper/cropper.min.css') }}">
-    <script src="{{ asset('vendor/cropper/cropper.min.js') }}"></script>
-    <script src="{{ asset('vendor/vuedraggable/vuedraggable.umd.min.js') }}"></script>
+  <script src="{{ asset('vendor/vue/2.7/vue.min.js') }}"></script>
+  <link rel="stylesheet" href="{{ asset('vendor/element-ui/element-ui.css') }}">
+  <script src="{{ asset('vendor/element-ui/element-ui.js') }}"></script>
+  <link rel="stylesheet" href="{{  asset('vendor/cropper/cropper.min.css') }}">
+  <script src="{{ asset('vendor/cropper/cropper.min.js') }}"></script>
+  <script src="{{ asset('vendor/vuedraggable/vuedraggable.umd.min.js') }}"></script>
 
   <script>
     // 从 URL 参数获取配置
@@ -1436,24 +1436,24 @@
       <el-row :gutter="0">
         <!-- 左侧文件夹树 -->
         <el-col :xs="8" :sm="6" :md="5" :lg="4"
-          :xl="3">
+                :xl="3">
           <div class="folder-tree">
             <el-tree ref="folderTree" :data="folders" :props="defaultProps" @node-click="handleNodeClick"
-              :highlight-current="true" :default-expanded-keys="defaultExpandedKeys"
-              :current-node-key="currentFolder ? currentFolder.id : '/'" node-key="id" draggable
-              :allow-drop="handleAllowDrop" :allow-drag="handleAllowDrag" @node-drag-start="handleDragStart"
-              @node-drag-enter="handleDragEnter" @node-drag-leave="handleDragLeave" @node-drag-end="handleNodeDragEnd"
-              @node-drop="handleNodeDrop" class="folder-tree-container">
+                     :highlight-current="true" :default-expanded-keys="defaultExpandedKeys"
+                     :current-node-key="currentFolder ? currentFolder.id : '/'" node-key="id" draggable
+                     :allow-drop="handleAllowDrop" :allow-drag="handleAllowDrag" @node-drag-start="handleDragStart"
+                     @node-drag-enter="handleDragEnter" @node-drag-leave="handleDragLeave" @node-drag-end="handleNodeDragEnd"
+                     @node-drop="handleNodeDrop" class="folder-tree-container">
               <div class="el-tree-node__wrapper" slot-scope="{ node, data }"
-                @contextmenu.prevent="showFolderContextMenu($event, data, node)" @dragover.prevent
-                @dragenter.prevent="handleTreeDragEnter($event, node, data)"
-                @dragleave.prevent="handleTreeDragLeave($event, node)" @drop.prevent="handleTreeDrop($event, node, data)">
+                   @contextmenu.prevent="showFolderContextMenu($event, data, node)" @dragover.prevent
+                   @dragenter.prevent="handleTreeDragEnter($event, node, data)"
+                   @dragleave.prevent="handleTreeDragLeave($event, node)" @drop.prevent="handleTreeDrop($event, node, data)">
                 <span class="custom-tree-node">
                   <i :class="[
                       data.isRoot ? 'el-icon-folder' : 'el-icon-folder',
                       node.expanded ? 'el-icon-folder-opened' : 'el-icon-folder'
                   ]"
-                    style="margin-right: 4px; color: #8446df;"></i>
+                     style="margin-right: 4px; color: #8446df;"></i>
                   <span>@{{ node.label }}</span>
                 </span>
               </div>
@@ -1462,22 +1462,22 @@
         </el-col>
         <!-- 右侧文件列表 -->
         <el-col :xs="16" :sm="18" :md="19" :lg="20"
-          :xl="21">
+                :xl="21">
           <div class="file-list">
             <div class="file-list-content">
               <div v-loading="loading" element-loading-text="加载中...">
                 <el-row :gutter="20">
                   <el-col :xs="12" :sm="8" :md="6" :lg="4"
-                    :xl="4" :xl="3" v-for="file in files" :key="file.id || file.path">
+                          :xl="4" :xl="3" v-for="file in files" :key="file.id || file.path">
                     <div :class="['file-card', selectedFiles.includes(file.id || file.path) ? 'selected' : '']"
-                      @click="handleFileClick($event, file)" @dblclick="handleFileDoubleClick(file)"
-                      @contextmenu.prevent="showContextMenu($event, file)" :data-is-dir="file.is_dir" draggable="true"
-                      @dragstart="handleFileDragStart($event, file)" @dragend="handleFileDragEnd($event)"
-                      @dragenter.prevent="handleFileDragEnter($event, file)" @dragover.prevent
-                      @dragleave.prevent="handleFileDragLeave($event)" @drop.prevent="handleFileDrop($event, file)">
+                         @click="handleFileClick($event, file)" @dblclick="handleFileDoubleClick(file)"
+                         @contextmenu.prevent="showContextMenu($event, file)" :data-is-dir="file.is_dir" draggable="true"
+                         @dragstart="handleFileDragStart($event, file)" @dragend="handleFileDragEnd($event)"
+                         @dragenter.prevent="handleFileDragEnter($event, file)" @dragover.prevent
+                         @dragleave.prevent="handleFileDragLeave($event)" @drop.prevent="handleFileDrop($event, file)">
                       <div v-if="isMultiSelectMode" class="file-checkbox">
                         <el-checkbox :value="selectedFiles.includes(file.id || file.path)"
-                          @click.native.stop="toggleFileSelect(file)">
+                                     @click.native.stop="toggleFileSelect(file)">
                         </el-checkbox>
                       </div>
                       <div class="file-thumb">
@@ -1489,11 +1489,11 @@
                         <template v-else>
                           <div class="file-thumb">
                             <div v-if="file.mime && file.mime.startsWith('image/')" class="preview-button"
-                              @click.stop="$refs['image-' + file.id][0].clickHandler()">
+                                 @click.stop="$refs['image-' + file.id][0].clickHandler()">
                               预览
                             </div>
                             <el-image :ref="'image-' + file.id" :src="file.url" :alt="file.name"
-                              fit="contain" :preview-src-list="[file.url]">
+                                      fit="contain" :preview-src-list="[file.url]">
                             </el-image>
                           </div>
                         </template>
@@ -1508,8 +1508,8 @@
                 <!-- 分页 -->
                 <div class="pagination-container">
                   <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                    :current-page="pagination.page" :page-sizes="[20, 40, 60, 80]" :page-size="pagination.per_page"
-                    layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
+                                 :current-page="pagination.page" :page-sizes="[20, 40, 60, 80]" :page-size="pagination.per_page"
+                                 layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
                   </el-pagination>
                 </div>
                 <!-- 添加空状态 -->
@@ -1537,8 +1537,8 @@
     <!-- 上传文件对话框 -->
     <el-dialog title="上传文件" :visible.sync="uploadDialog.visible" width="500px">
       <el-upload class="file-uploader" drag multiple :action="uploadUrl" :headers="uploadHeaders"
-        :data="uploadData" :before-upload="beforeUpload" :on-success="handleUploadSuccess"
-        :on-error="handleUploadError" :on-progress="handleUploadProgress">
+                 :data="uploadData" :before-upload="beforeUpload" :on-success="handleUploadSuccess"
+                 :on-error="handleUploadError" :on-progress="handleUploadProgress">
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip" slot="tip">支持 jpg、jpeg、png、gif 格式的图片文件</div>
@@ -1563,7 +1563,7 @@
     <!-- 移动文件对话框 -->
     <el-dialog title="移动到" :visible.sync="moveDialog.visible" width="400px">
       <el-tree :data="folders" :props="defaultProps" @node-click="handleMoveTargetSelect"
-        :highlight-current="true" node-key="id">
+               :highlight-current="true" node-key="id">
         <span class="custom-tree-node" slot-scope="{ node, data }">
           <i class="el-icon-folder" style="margin-right: 4px; color: #8446df;"></i>
           <span>@{{ node.label }}</span>
@@ -1588,7 +1588,7 @@
     <!-- 复制文件对话框 -->
     <el-dialog title="复制到" :visible.sync="copyDialog.visible" width="400px">
       <el-tree :data="folders" :props="defaultProps" @node-click="handleCopyTargetSelect"
-        :highlight-current="true" node-key="id">
+               :highlight-current="true" node-key="id">
         <span class="custom-tree-node" slot-scope="{ node, data }">
           <i class="el-icon-folder" style="margin-right: 4px; color: #8446df;"></i>
           <span>@{{ node.label }}</span>
@@ -1602,7 +1602,7 @@
 
     <!-- 文件夹右键菜单 -->
     <div v-if="folderContextMenu.visible" class="file-card-context-menu"
-      :style="{
+         :style="{
           top: folderContextMenu.style.top,
           left: folderContextMenu.style.left
       }">
@@ -1635,7 +1635,7 @@
     <!-- 文件夹移动对话框 -->
     <el-dialog title="移动文件夹" :visible.sync="folderMoveDialog.visible" width="400px">
       <el-tree :data="folders" :props="defaultProps" @node-click="handleFolderMoveTargetSelect"
-        :highlight-current="true" node-key="id">
+               :highlight-current="true" node-key="id">
         <span class="custom-tree-node" slot-scope="{ node, data }">
           <i class="el-icon-folder" style="margin-right: 4px; color: #8446df;"></i>
           <span>@{{ node.label }}</span>
@@ -1649,7 +1649,7 @@
 
     <!-- 存储配置 Modal -->
     <div class="modal fade" id="storageConfigModal" tabindex="-1" aria-labelledby="storageConfigModalLabel"
-      aria-hidden="true">
+         aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -1662,14 +1662,14 @@
                 <label class="form-label">{{ __('panel/file_manager.storage_type') }}</label>
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="storageType" id="storageTypeLocal"
-                    value="local" v-model="storageConfig.driver">
+                         value="local" v-model="storageConfig.driver">
                   <label class="form-check-label" for="storageTypeLocal">
                     {{ __('panel/file_manager.local_storage') }}
                   </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="storageType" id="storageTypeOSS"
-                    value="oss" v-model="storageConfig.driver">
+                         value="oss" v-model="storageConfig.driver">
                   <label class="form-check-label" for="storageTypeOSS">
                     {{ __('panel/file_manager.alibaba_oss') }}
                   </label>
@@ -1690,7 +1690,7 @@
                 <div class="mb-3">
                   <label for="ossEndpoint" class="form-label">{{ __('panel/file_manager.endpoint') }}</label>
                   <input type="text" class="form-control" id="ossEndpoint" v-model="storageConfig.endpoint"
-                    placeholder="例如: https://innoshop.oss-cn-hangzhou.aliyuncs.com">
+                         placeholder="例如: https://innoshop.oss-cn-hangzhou.aliyuncs.com">
                 </div>
 
                 <div class="mb-3">
@@ -1701,23 +1701,23 @@
                 <div class="mb-3">
                   <label for="ossRegion" class="form-label">{{ __('panel/file_manager.region') }}</label>
                   <input type="text" class="form-control" id="ossRegion" v-model="storageConfig.region"
-                    placeholder="例如: cn-hangzhou">
+                         placeholder="例如: cn-hangzhou">
                 </div>
 
                 <div class="mb-3">
                   <label for="ossCdnDomain" class="form-label">{{ __('panel/file_manager.cdn_domain') }} <small
                       class="text-muted">({{ __('panel/file_manager.optional') }})</small></label>
                   <input type="text" class="form-control" id="ossCdnDomain" v-model="storageConfig.cdn_domain"
-                    placeholder="例如: https://cdn.example.com">
+                         placeholder="例如: https://cdn.example.com">
                 </div>
               </div>
             </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary"
-              data-bs-dismiss="modal">{{ __('panel/common.cancel') }}</button>
+                    data-bs-dismiss="modal">{{ __('panel/common.cancel') }}</button>
             <button type="button" class="btn btn-primary"
-              @click="saveStorageConfig">{{ __('panel/common.btn_save') }}</button>
+                    @click="saveStorageConfig">{{ __('panel/common.btn_save') }}</button>
           </div>
         </div>
       </div>
@@ -1950,7 +1950,7 @@
         loadFiles(path = null) {
           this.loading = true;
           const currentPath = path !== null ? path : (this.currentFolder ? this.currentFolder.path : '/');
-          
+
           const params = {
             page: this.pagination.page,
             per_page: this.pagination.per_page,
@@ -1958,8 +1958,8 @@
           };
 
           http.get('file_manager/files', {
-              params
-            })
+            params
+          })
             .then(res => {
               // 处理文件列表数据
 
@@ -2007,8 +2007,8 @@
             return false;
           }
 
-          const isLt2M = file.size / 1024 / 1024 < 8;
-          if (!isLt2M) {
+          const isLt8M = file.size / 1024 / 1024 < 8;
+          if (!isLt8M) {
             this.$message.error('文件大小不能超过 8MB！');
             return false;
           }
@@ -2043,6 +2043,36 @@
           }
         },
 
+        // 添加一个压缩图片的方法
+        compressImage(canvas, quality = 0.8, maxWidth = 1920, maxHeight = 1920) {
+          // 获取原始尺寸
+          let width = canvas.width;
+          let height = canvas.height;
+
+          // 计算压缩后的尺寸
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width *= ratio;
+            height *= ratio;
+
+            // 创建新画布
+            const resizeCanvas = document.createElement('canvas');
+            resizeCanvas.width = width;
+            resizeCanvas.height = height;
+
+            // 绘制压缩后的图片
+            const ctx = resizeCanvas.getContext('2d');
+            ctx.drawImage(canvas, 0, 0, width, height);
+            canvas = resizeCanvas;
+          }
+
+          return new Promise(resolve => {
+            canvas.toBlob(blob => {
+              resolve(blob);
+            }, 'image/jpeg', quality); // 使用 jpeg 格式并设置质量
+          });
+        },
+
         cropImage(file) {
           const reader = new FileReader();
           reader.onload = (e) => {
@@ -2061,6 +2091,7 @@
           <div class="cropper-controls">
             <button class="el-button el-button--default el-button--small cancel-btn">取消</button>
             <button class="el-button el-button--primary el-button--small confirm-btn">确认</button>
+            <button class="el-button el-button--info el-button--small no-crop-btn">不裁剪</button>
           </div>
         `;
 
@@ -2073,29 +2104,23 @@
             // 确认裁剪
             dialog.querySelector('.confirm-btn').onclick = () => {
               const canvas = cropper.getCroppedCanvas({
-                width: 800,
-                height: 800
+                // width: 2000,
+                // height: 2000
               });
 
-              canvas.toBlob((blob) => {
+              // 压缩图片后再上传
+              this.compressImage(canvas, 0.8, 1920, 1920).then(blob => {
                 const formData = new FormData();
-                formData.append('file', blob, file.name);
+                formData.append('file', blob, file.name.replace(/\.[^.]+$/, '.jpg')); // 将文件扩展名改为 jpg
                 formData.append('path', this.uploadData.path);
                 formData.append('type', 'images');
 
-                // 上传裁剪后的图片
+                // 上传压缩后的图片
                 http.post('file_manager/upload', formData)
                   .then(res => {
                     if (res.success) {
-                      this.$message.success('上传成功');
-
-                      this.cleanupDialog(dialog, mask);
-
-                      // 关闭上传话框
-                      this.uploadDialog.visible = false;
-
-                      // 刷新件列表
                       this.loadFiles();
+                      this.$message.success('上传成功');
                     } else {
                       this.$message.error(res.message || '上传失败');
                     }
@@ -2113,6 +2138,47 @@
             // 取消裁剪
             dialog.querySelector('.cancel-btn').onclick = () => {
               this.cleanupDialog(dialog, mask);
+            };
+
+            // 不裁剪,直接压缩
+            dialog.querySelector('.no-crop-btn').onclick = () => {
+              // 创建临时 canvas
+              const canvas = document.createElement('canvas');
+              const img = new Image();
+              img.src = e.target.result;
+
+              img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                // 仅压缩,不改变尺寸
+                this.compressImage(canvas, 0.8, img.width, img.height).then(blob => {
+                  const formData = new FormData();
+                  formData.append('file', blob, file.name.replace(/\.[^.]+$/, '.jpg'));
+                  formData.append('path', this.uploadData.path);
+                  formData.append('type', 'images');
+
+                  // 上传压缩后的图片
+                  http.post('file_manager/upload', formData)
+                    .then(res => {
+                      if (res.success) {
+                        this.loadFiles();
+                        this.$message.success('上传成功');
+                      } else {
+                        this.$message.error(res.message || '上传失败');
+                      }
+                    })
+                    .catch(err => {
+                      this.$message.error('上传失败：' + err.message);
+                    })
+                    .finally(() => {
+                      this.cleanupDialog(dialog, mask);
+                      this.uploadDialog.visible = false;
+                    });
+                });
+              };
             };
           };
           reader.readAsDataURL(file);

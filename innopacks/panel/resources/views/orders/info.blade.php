@@ -94,8 +94,46 @@
             <td>{{ $item->product_sku }}</td>
             <td>{{ $item->quantity }}</td>
             <td>{{ $item->price_format }}</td>
-            <td>{{ $item->subtotal_format }}</td>
+            <td>
+              @php
+                $customizationTotalFee = 0;
+                if (isset($item->customizations) && is_array($item->customizations)) {
+                    foreach ($item->customizations as $key => $detail) {
+                        $customizationTotalFee += ($detail['price'] ?? 0) * $item->quantity;
+                    }
+                }
+                $calculatedSubtotal = ($item->price * $item->quantity) + $customizationTotalFee;
+              @endphp
+              {{ currency_format($calculatedSubtotal, $order->currency_code, $order->currency_value) }}
+            </td>
+{{--            <td>{{ $item->subtotal_format }}</td>--}}
           </tr>
+
+          {{-- 显示定制项 --}}
+          @if (isset($item->customizations) && is_array($item->customizations))
+            @foreach ($item->customizations as $key => $detail) {{-- 遍历包含价格的定制项 --}}
+              @php
+                $label = ($key === 'custom_name') ? __('CustomizationOptions::common.customize_name') : __('CustomizationOptions::common.customize_number');
+                $fee = $detail['price'] ?? 0; // 从保存的定制信息中获取单价
+                $customizationTotalFee = $fee * $item->quantity;
+              @endphp
+
+              <tr>
+                <td></td>
+                <td><span class="small text-secondary">{{ $label }}</span></td>
+                <td><span class="small text-secondary">{{ $detail['value'] }}</span></td>
+                <td></td>
+                <td>
+                  <span class="small text-secondary">
+                  {{ currency_format($fee, $order->currency_code, $order->currency_value) }}
+                  </span>
+                </td>
+                <td><span class="small text-secondary">{{currency_format($customizationTotalFee, $order->currency_code, $order->currency_value)}}</span>
+                </td>
+              </tr>
+            @endforeach
+          @endif
+
         @endforeach
         @foreach ($order->fees as $total)
           <tr>

@@ -48,7 +48,8 @@ class CartService
      */
     public static function getInstance(int $customerID = 0, string $guestID = ''): static
     {
-        return new static($customerID, $guestID);
+        // 修改为通过服务容器解析
+        return app(static::class, compact('customerID', 'guestID'));
     }
 
     /**

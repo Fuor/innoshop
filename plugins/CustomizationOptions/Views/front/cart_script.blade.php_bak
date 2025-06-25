@@ -1,0 +1,46 @@
+@php
+  $custom_name_fee = currency_format(plugin_setting('customization_options', 'custom_name_fee', 0));
+  $custom_number_fee = currency_format(plugin_setting('customization_options', 'custom_number_fee', 0));
+  $custom_labels = [
+    'custom_name' => __('CustomizationOptions::common.customize_name'),
+    'custom_number' => __('CustomizationOptions::common.customize_number'),
+  ];
+@endphp
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const cartData = @json($list ?? []); // 获取购物车数据
+
+    cartData.forEach(function(item) {
+      if (item.customizations) {
+        const row = document.querySelector(`tr[data-id="${item.id}"]`); // 定位到父产品行
+
+        if (row) {
+          const productInfoCell = row.querySelector('.td-product-info');
+          const priceCell = row.querySelector('.td-price');
+
+          if (productInfoCell && priceCell) {
+            let customizationInfoHtml = '';
+            let customizationPriceHtml = '';
+
+            Object.keys(item.customizations).forEach(function(key) {
+              const label = key === 'custom_name' ? 'customize_name' : 'customize_number';
+              const customLabels = @json($custom_labels);
+
+              const customNameFee = @json($custom_name_fee);
+              const customNumberFee = @json($custom_number_fee);
+
+              customizationInfoHtml += `<div class="text-secondary small">${customLabels[key]} : ${item.customizations[key]['value']}</div>`;
+              customizationPriceHtml += `<div class="small">+ ${key === 'custom_name' ? customNameFee : customNumberFee}</div>`;
+            });
+
+            // 将定制项信息添加到产品信息下方
+            productInfoCell.querySelector('.product-info').insertAdjacentHTML('beforeend', customizationInfoHtml);
+
+            // 将定制单价添加到价格列下方
+            priceCell.insertAdjacentHTML('beforeend', customizationPriceHtml);
+          }
+        }
+      }
+    });
+  });
+</script>

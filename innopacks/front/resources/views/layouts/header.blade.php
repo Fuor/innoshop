@@ -154,7 +154,7 @@
       </a>
     </div>
 
-    <a href="{{ front_route('carts.index') }}" class="header-cart-icon"><img src="{{ asset('images/icons/cart.svg') }}"
+    <a href="{{ front_route('carts.index') }}" class="header-cart-icon" style="margin-right: 0.5rem;"><img src="{{ asset('images/icons/cart.svg') }}"
                                                                              class="img-fluid" alt="cart"><span
         class="icon-quantity">0</span></a>
 

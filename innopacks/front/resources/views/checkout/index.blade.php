@@ -196,6 +196,10 @@
                     </div>
                     <div class="text-end">{{ $product['price_format'] }}</div>
                   </div>
+
+                  {{-- 在这里添加新的钩子 --}}
+                  @hookinsert('checkout.product_item.after_sku', $product)
+
                 @endforeach
               </div>
             </div>

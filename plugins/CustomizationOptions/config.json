@@ -1,0 +1,18 @@
+{
+  "code": "customization_options",
+  "type": "fee",
+  "name": {
+    "en": "Customization Options",
+    "zh-cn": "定制选项"
+  },
+  "description": {
+    "en": "Add customization options with additional fees",
+    "zh-cn": "添加带额外费用的定制选项"
+  },
+  "version": "1.0.0",
+  "author": {
+    "name": "InnoShop",
+    "email": "team@innoshop.com"
+  },
+  "icon": "/plugins/CustomizationOptions/Public/images/logo.png"
+}

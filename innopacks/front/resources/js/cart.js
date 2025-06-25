@@ -154,6 +154,20 @@ function updateCartOffcanvasContent(data) {
   let cartItemsHtml = '<div class="cart-items">';
 
   data.list.forEach(function (product) {
+    let childItemsHtml = '';
+
+    // 添加定制项的渲染逻辑
+    if (product.children && product.children.length > 0) {
+      product.children.forEach(function(child) {
+        childItemsHtml += `
+                <div class="d-flex justify-content-between align-items-center small text-secondary">
+                    <span class="text-start">${child.sku_code}</span>
+                    <span class="text-end">${child.price_format}</span>
+                </div>
+            `;
+      });
+    }
+
     cartItemsHtml += `
       <div class="cart-item" data-id="${product.id}">
         <div class="d-flex">
@@ -167,6 +181,9 @@ function updateCartOffcanvasContent(data) {
             <div class="text-secondary mt-1">
               ${product.sku_code}
               ${product.variant_label ? '- ' + product.variant_label : ''}
+            </div>
+            <div class="custom-item-info mt-1">
+              ${childItemsHtml}
             </div>
             <div class="d-flex justify-content-between align-items-center mt-2">
               <div class="cart-item-price fs-5">${product.price_format}</div>

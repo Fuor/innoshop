@@ -519,3 +519,35 @@ a {
 input[type="password"] {
   font-family: 'Arial';
 }
+
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none ! important;
+  }
+
+  .account-sidebar .account-links {
+    display: none;
+  }
+
+  .account-sidebar .account-links.show {
+    display: block;
+  }
+
+  .account-sidebar .toggle-links-btn {
+    display: block;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 769px) {
+  .hide-laptop {
+    display: none ! important;
+  }
+
+  .account-sidebar .toggle-links-btn {
+    display: none;
+  }
+}

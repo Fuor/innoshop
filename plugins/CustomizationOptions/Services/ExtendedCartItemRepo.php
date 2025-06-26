@@ -2,6 +2,7 @@
 
 namespace Plugin\CustomizationOptions\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use InnoShop\Common\Repositories\CartItemRepo;
 use InnoShop\Common\Models\CartItem;
 use InnoShop\Common\Models\Product\Sku;
@@ -17,6 +18,37 @@ class ExtendedCartItemRepo extends CartItemRepo
         return app(static::class);
     }
 
+    /**
+     * Get filter builder.
+     *
+     * @param array $filters
+     * @return Builder
+     */
+    public function builder(array $filters = []): Builder
+    {
+        // 调用父类的 builder 方法获取基础查询
+        $builder = parent::builder($filters);
+
+        $customizations = $filters['customizations'] ?? null;
+        if ($customizations) {
+            $builder->where(function ($query) use ($customizations) {
+                foreach ($customizations as $key => $value) { // 直接获取值，而不是 $detail['value']
+                    // 匹配定制项的键和值
+                    // 根据您提供的结构，直接匹配 reference->customizations->{key}
+                    $query->whereJsonContains('reference->customizations->' . $key, $value);
+                }
+            });
+        } else {
+            // 如果没有定制项，确保只匹配没有定制项的购物车项目
+            $builder->where(function ($query) {
+                $query->whereNull('reference')
+                    ->orWhereJsonLength('reference->customizations', 0);
+            });
+        }
+
+        return $builder;
+    }
+
     public function create($data): mixed
     {
         // 提取定制选项数据
@@ -30,9 +62,10 @@ class ExtendedCartItemRepo extends CartItemRepo
         $processedData = $this->handleDataWithCustomizations($data, $customizations);
 
         $filters = [
-            'sku_code'    => $processedData['sku_code'],
-            'customer_id' => $processedData['customer_id'],
-            'guest_id'    => $processedData['guest_id'],
+            'sku_code'       => $processedData['sku_code'],
+            'customer_id'    => $processedData['customer_id'],
+            'guest_id'       => $processedData['guest_id'],
+            'customizations' => $customizations, // 将定制信息传递给 builder
         ];
 
         $existingCart = $this->builder($filters)->first();
@@ -42,7 +75,12 @@ class ExtendedCartItemRepo extends CartItemRepo
 
             // 如果有定制选项，更新reference字段
             if ($customizations) {
-                $existingCart->reference = json_encode(['customizations' => $customizations]);
+                $currentReference = json_decode($existingCart->reference, true);
+                if (!is_array($currentReference)) {
+                    $currentReference = [];
+                }
+                $currentReference['customizations'] = $customizations;
+                $existingCart->reference            = json_encode($currentReference);
                 $existingCart->save();
             }
 

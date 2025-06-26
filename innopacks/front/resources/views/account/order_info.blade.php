@@ -52,27 +52,30 @@
           </table>
 
           <div class="products-table mb-4">
-            <table class="table products-table align-middle">
+            <table class="table products-table align-middle text-center">
               <thead>
               <tr>
-                <th>{{ __('front/order.product') }}</th>
-                <th>{{ __('front/order.operation') }}</th>
+                <th class="text-start">{{ __('front/order.product') }}</th>
                 <th>{{ __('front/order.price') }}</th>
                 <th>{{ __('front/order.quantity') }}</th>
                 <th>{{ __('front/order.subtotal') }}</th>
+                <th>{{ __('front/order.operation') }}</th>
               </tr>
               </thead>
               <tbody>
               @foreach ($order->items as $product)
                 <tr>
-                  <td>
+                  <td  class="text-start">
                     <div class="product-item">
                       <div class="product-image">
                         <img src="{{ $product['image'] }}" class="img-fluid">
                       </div>
                       <div class="product-info">
-                        <div class="name" data-bs-toggle="tooltip" title="{{ $product['name'] }}">
+                        <div class="name hide-mobile" data-bs-toggle="tooltip" title="{{ $product['name'] }}">
                           {{ sub_string($product['name'], 64) }}
+                        </div>
+                        <div class="name hide-laptop" data-bs-toggle="tooltip" title="{{ $product['name'] }}">
+                          {{ sub_string($product['name'], 32) }}
                         </div>
                         <div class="sku mt-2 text-secondary">{{ $product['product_sku'] }}
                           @if ($product['variant_label'])
@@ -82,8 +85,13 @@
                       </div>
                     </div>
                   </td>
+                  <td>{{ $product['price_format'] }}</td>
+                  <td>{{ $product['quantity'] }}</td>
+                  <td>{{ $product['subtotal_format'] }}</td>
                   <td>
-                    @php($reviewed = \InnoShop\Common\Repositories\ReviewRepo::orderReviewed(current_customer_id(),$product['id']))
+                    @php
+                      $reviewed = \InnoShop\Common\Repositories\ReviewRepo::orderReviewed(current_customer_id(),$product['id']);
+                    @endphp
                     @if($order->status == 'completed' && !$reviewed)
                       <button type="button" class="btn btn-sm btn-primary add_review" data-bs-toggle="modal"
                               data-bs-target="#addReview-Modal" data-name="{{ $product['name'] }}"
@@ -93,10 +101,35 @@
                       </button>
                     @endif
                   </td>
-                  <td>{{ $product['price_format'] }}</td>
-                  <td>{{ $product['quantity'] }}</td>
-                  <td>{{ $product['subtotal_format'] }}</td>
                 </tr>
+
+                {{-- 显示定制项的单价和总计 --}}
+                @if (isset($product['customizations']) && is_array($product['customizations']))
+                  @foreach ($product['customizations'] as $key => $detail)
+                    @php
+                      $label = ($key === 'custom_name') ? __('CustomizationOptions::common.customize_name') : __('CustomizationOptions::common.customize_number');
+                      $value = $detail['value'] ?? '';
+                      $fee = $detail['price'] ?? 0;
+                      $customizationItemTotal = $fee * $product['quantity'];
+                    @endphp
+                    <tr class="customization-item">
+                      <td  class="text-start"><span class="small text-secondary">{{ $label }} : {{$value}}</span></td> {{-- 商品列显示定制项名称 --}}
+                      <td>
+                        <span class="small text-secondary">
+                          {{ currency_format($fee, $order->currency_code, $order->currency_value) }}
+                        </span>
+                      </td> {{-- 单价列显示定制项单价 --}}
+                      <td><span class="small text-secondary">{{ $product['quantity'] }}</span></td>
+                      <td>
+                        <span class="small text-secondary">
+                          {{ currency_format($customizationItemTotal, $order->currency_code, $order->currency_value) }}
+                        </span>
+                      </td> {{-- 小计列显示定制项总计 --}}
+                      <td></td>
+                    </tr>
+                  @endforeach
+                @endif
+
               @endforeach
 
               @foreach ($order->fees as $total)
@@ -105,6 +138,7 @@
                   <td></td>
                   <td><strong>{{ $total['title'] }}</strong></td>
                   <td>{{ $total->value_format }}</td>
+                  <td></td>
                 </tr>
               @endforeach
               <tr>
@@ -112,6 +146,7 @@
                 <td></td>
                 <td><strong>{{ __('front/order.order_total') }}</strong></td>
                 <td>{{ $order->total_format }}</td>
+                <td></td>
               </tr>
               </tbody>
             </table>

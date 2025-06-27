@@ -22,12 +22,13 @@ class Sku extends BaseModel
 
     protected $fillable = [
         'product_id', 'images', 'model', 'code', 'price', 'origin_price', 'quantity', 'is_default', 'position',
-        'variants',
+        'variants', 'ladder_prices',
     ];
 
     protected $casts = [
         'images'   => 'array',
         'variants' => 'array',
+        'ladder_prices' => 'array', // 添加 ladder_prices 类型转换
     ];
 
     protected $appends = ['image'];

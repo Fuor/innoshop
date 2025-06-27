@@ -94,19 +94,7 @@
             <td>{{ $item->product_sku }}</td>
             <td>{{ $item->quantity }}</td>
             <td>{{ $item->price_format }}</td>
-            <td>
-              @php
-                $customizationTotalFee = 0;
-                if (isset($item->customizations) && is_array($item->customizations)) {
-                    foreach ($item->customizations as $key => $detail) {
-                        $customizationTotalFee += ($detail['price'] ?? 0) * $item->quantity;
-                    }
-                }
-                $calculatedSubtotal = ($item->price * $item->quantity) + $customizationTotalFee;
-              @endphp
-              {{ currency_format($calculatedSubtotal, $order->currency_code, $order->currency_value) }}
-            </td>
-{{--            <td>{{ $item->subtotal_format }}</td>--}}
+            <td>{{ $item->subtotal_format }}</td>
           </tr>
 
           {{-- 显示定制项 --}}

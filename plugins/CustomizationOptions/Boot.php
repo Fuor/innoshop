@@ -11,7 +11,6 @@ class Boot
     {
         // 完全替换CartService类的静态调用
         app()->singleton(\InnoShop\Common\Services\CartService::class, function ($app, $parameters) {
-            Log::info('Binding ExtendedCartService to CartService alias');
             return new \Plugin\CustomizationOptions\Services\ExtendedCartService(
                 $parameters['customerID'] ?? 0,
                 $parameters['guestID'] ?? ''
@@ -26,14 +25,14 @@ class Boot
                 $this->handleCustomizationCart($request->all());
 
                 // 构建响应数据
-                $cartService = \InnoShop\Common\Services\CartService::getInstance();
+                $cartService  = \InnoShop\Common\Services\CartService::getInstance();
                 $responseData = $cartService->handleResponse();
 
                 // 直接返回JSON响应，阻止原始处理
                 echo json_encode([
                     'success' => true,
                     'message' => 'Saved successfully',
-                    'data' => $responseData
+                    'data'    => $responseData
                 ]);
                 exit; // 强制停止后续处理
             }
@@ -63,9 +62,9 @@ class Boot
                     foreach ($reference['customizations'] as $key => $value) {
                         $customItemPrice = 0;
                         if ($key === 'custom_name') {
-                            $customItemPrice = (float) plugin_setting('customization_options', 'custom_name_fee', 0);
+                            $customItemPrice = (float)plugin_setting('customization_options', 'custom_name_fee', 0);
                         } elseif ($key === 'custom_number') {
-                            $customItemPrice = (float) plugin_setting('customization_options', 'custom_number_fee', 0);
+                            $customItemPrice = (float)plugin_setting('customization_options', 'custom_number_fee', 0);
                         }
                         $processedCustomizations[$key] = [
                             'value' => $value,
@@ -79,8 +78,8 @@ class Boot
                     );
 
                     // 将定制费用加入到subtotal中
-                    $originalSubtotal                = $data['data']['subtotal'];
-                    $newSubtotal                     = $originalSubtotal + ($customizationFee * $data['data']['quantity']);
+                    $originalSubtotal                = $data['data']['price'] * $cartItem->quantity;
+                    $newSubtotal                     = $originalSubtotal + ($customizationFee * $cartItem->quantity);
                     $data['data']['subtotal']        = $newSubtotal;
                     $data['data']['subtotal_format'] = currency_format($newSubtotal);
 
@@ -114,28 +113,27 @@ class Boot
                 }
             }
             return $data;
-        });
+        }, 20);
 
         // 扩展购物车响应数据，包含定制费用
         listen_hook_filter('service.cart.response', function ($data) {
-            $totalCustomizationFee = 0;
-
-            foreach ($data['list'] as &$item) {
-                if (isset($item['customizations'])) {
-                    $customizationFee          = $this->calculateItemCustomizationFee($item['customizations']);
-                    $item['customization_fee'] = $customizationFee;
-                    $totalCustomizationFee     += $customizationFee * $item['quantity'];
+            $recalculatedAmount   = 0;
+            $recalculatedQuantity = 0;
+            foreach ($data['list'] as $item) {
+                if ($item['selected']) {
+                    $recalculatedAmount   += $item['subtotal'];
+                    $recalculatedQuantity += $item['quantity'];
                 }
             }
 
-            // 将定制费用加到总金额中
-            if ($totalCustomizationFee > 0) {
-                $data['amount']        += $totalCustomizationFee;
-                $data['amount_format'] = currency_format($data['amount']);
-            }
+            $data['amount']        = $recalculatedAmount;
+            $data['amount_format'] = currency_format($recalculatedAmount);
+
+            $data['total']        = $recalculatedQuantity;
+            $data['total_format'] = $recalculatedQuantity <= 99 ? $recalculatedQuantity : '99+';
 
             return $data;
-        });
+        }, 20);
 
         // 在购物车页面底部添加JavaScript来显示定制信息
         listen_blade_insert('cart.bottom', function ($data) {

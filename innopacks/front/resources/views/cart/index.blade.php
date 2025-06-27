@@ -69,7 +69,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="td-price">{{ $product['price_format'] }}</td>
+                  <td class="td-price">
+                    <span class="main-price">{{ $product['price_format'] }}</span>
+                    <!-- 定制项单价由插件JS插入 -->
+                  </td>
                   <td class="td-quantity d-none d-lg-table-cell">
                     <div class="quantity-wrap">
                       <div class="minus"><i class="bi bi-dash-lg"></i></div>
@@ -197,7 +200,9 @@
               window.location.reload();
             }
           } else {
-            $(`tr[data-id=${id}] .td-subtotal`).text(res.data.list.find(item => item.id === id).subtotal_format);
+            const updatedItem = res.data.list.find(item => item.id === id);
+            $(`tr[data-id=${id}] .td-price .main-price`).text(updatedItem.price_format); // 更新单价
+            $(`tr[data-id=${id}] .td-subtotal`).text(updatedItem.subtotal_format); // 更新小计
           }
         }
       })

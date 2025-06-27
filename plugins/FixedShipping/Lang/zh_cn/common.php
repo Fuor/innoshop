@@ -12,4 +12,6 @@ return [
     'fixed'   => '固定运费',
     'percent' => '百分比',
     'value'   => '运费值',
+    'country_rates'        => '国家费率',
+    'continue_weight_rate' => '续重费率',
 ];

@@ -24,7 +24,7 @@ return [
     ],
     [
         'name'      => 'value',
-        'label'     => '运费值',
+        'label'     => '运费值(默认)',
         'label_key' => 'common.value',
         'type'      => 'string',
         'required'  => true,
@@ -38,5 +38,13 @@ return [
         'description' => '按国家计费时的各国家费率，格式为：国家代码=费率，每行一个',
         'required'  => false,
         'show_if'   => ['type' => '', '==', 'country'],
+    ],
+    [
+        'name'      => 'continue_weight_rate',
+        'label'     => '续重费率',
+        'label_key' => 'common.continue_weight_rate',
+        'type'      => 'string',
+        'description' => '续重费率（按首重的百分比计算，填30即首重费*30%）',
+        'required'  => false
     ],
 ];

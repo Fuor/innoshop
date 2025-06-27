@@ -1,0 +1,18 @@
+{
+  "code": "ladder_price",
+  "type": "feature",
+  "name": {
+    "en": "Ladder Price",
+    "zh-cn": "阶梯价格"
+  },
+  "description": {
+    "en": "This plugin allows you to set different prices for products based on the quantity purchased, enabling bulk pricing strategies.",
+    "zh-cn": "此插件允许您根据购买数量设置产品的不同价格，从而实现批量定价策略。"
+  },
+  "version": "1.0.0",
+  "author": {
+    "name": "Fuor",
+    "email": "furo88@gmail.com"
+  },
+  "icon": "/plugins/LadderPrice/Public/images/logo.png"
+}

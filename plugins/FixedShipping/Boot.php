@@ -85,6 +85,8 @@ class Boot extends BaseBoot
         $weight        = $entity->getWeight();
         $count         = array_sum(array_column($entity->getProducts(), 'quantity'));
 
+        $continueWeightRate = plugin_setting('fixed_shipping', 'continue_weight_rate', 40);
+
         // 获取目的地国家信息
         $destAddress = $entity->getDestAddress();
         $countryId   = $destAddress['country_id'] ?? 0;
@@ -130,7 +132,7 @@ class Boot extends BaseBoot
 
                 //首件按设置运费算，后续每件只收取原运费的60%
                 if ($count > 1) {
-                    $cost += ($count - 1) * ($cost * 0.6);
+                    $cost += ($count - 1) * ($cost * ($continueWeightRate / 100));
                 }
 
                 return $cost;

@@ -91,7 +91,7 @@
           <input type="hidden" name="skus[0][is_default]" value="1">
         </div>
       </div>
-      
+
       <!-- 多规格部分 -->
       <div id="specifications_box" class="{{ !$product->isMultiple() ? 'd-none' : '' }}">
         <div class="alert alert-info mb-3" id="multi_spec_notice">
@@ -103,6 +103,8 @@
       </div>
     </div>
   </div>
+
+  @hookinsert('panel.product.edit.form.after')
 
   <x-common-form-switch-radio :title="__('panel/common.status')" name="active"
                               :value="old('active', $product->active ?? true)"/>

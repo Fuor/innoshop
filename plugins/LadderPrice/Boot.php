@@ -87,29 +87,20 @@ class Boot
             $skuData = $data['sku'] ?? null; // 这是 SkuListItem 转换后的数组
             $product = $data['product'] ?? null; // 获取 Product 模型
 
-            // 添加日志，确认钩子是否被触发，以及 $sku 是否包含 ladder_prices
-            \Illuminate\Support\Facades\Log::info('front.product.show.price hook triggered.', $skuData);
-
-
             if ($skuData && $product) {
                 // 从数据库中重新加载完整的 Sku 模型，包含 ladder_prices
                 $fullSku = SkuModel::find($skuData['id']);
-
-                \Illuminate\Support\Facades\Log::info('front.product.show.price hook triggered fullSku', $fullSku->toArray());
-
                 if ($fullSku && is_array(
                         $fullSku->ladder_prices
                     ) && !empty($fullSku->ladder_prices)) {
                     // 将 ladder_prices 添加到 $skuData 数组中
                     $skuData['ladder_prices'] = $fullSku->ladder_prices;
+
+                    // 渲染包含阶梯价格表和动态JS的视图
+                    // 将修改后的 $skuData 传递给视图
+                    return view('LadderPrice::front.product_price_display', ['sku' => $skuData, 'product' => $product]
+                    )->render();
                 }
-
-                \Illuminate\Support\Facades\Log::info('front.product.show.price hook triggered skuData', $skuData);
-
-                // 渲染包含阶梯价格表和动态JS的视图
-                // 将修改后的 $skuData 传递给视图
-                return view('LadderPrice::front.product_price_display', ['sku' => $skuData, 'product' => $product]
-                )->render();
             }
             return $output; // 如果没有 SKU 或阶梯价，返回原始内容
         });

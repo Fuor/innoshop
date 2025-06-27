@@ -60,8 +60,10 @@
                             @endif
                           </div>
                         </div>
-                        <div class="mb-price mt-1">{{ $product['price_format'] }}</div>
-                        <div class="quantity-wrap mt-1 d-lg-none">
+                        <div class="mb-price mt-1">
+                          <span class="main-price">{{ $product['price_format'] }}</span>
+                        </div>
+                        <div class="quantity-wrap mt-1 d-lg-none" style="width: 140px;">
                           <div class="minus"><i class="bi bi-dash-lg"></i></div>
                           <input type="number" class="form-control" value="{{ $product['quantity'] ?? 1 }}">
                           <div class="plus"><i class="bi bi-plus-lg"></i></div>
@@ -202,6 +204,7 @@
           } else {
             const updatedItem = res.data.list.find(item => item.id === id);
             $(`tr[data-id=${id}] .td-price .main-price`).text(updatedItem.price_format); // 更新单价
+            $(`tr[data-id=${id}] .mb-price .main-price`).text(updatedItem.price_format); // 更新单价
             $(`tr[data-id=${id}] .td-subtotal`).text(updatedItem.subtotal_format); // 更新小计
           }
         }

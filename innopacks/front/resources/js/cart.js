@@ -273,6 +273,9 @@ function initCartItemEvents() {
  * @param {string} method - HTTP method (put or delete)
  */
 function updateOffcanvasCart(id, quantity, method = 'put') {
+  // 将 id 转换为数字类型，确保与 item.id 的类型匹配
+  const itemIdToFind = parseInt(id);
+
   axios[method](`${urls.cart_add}/${id}`, { quantity }).then(function (response) {
     const res = response;
     if (res.success) {
@@ -299,11 +302,15 @@ function updateOffcanvasCart(id, quantity, method = 'put') {
         }
       } else {
         // Update subtotal for this item
-        var item = res.data.list.find(item => item.id === id);
+        var item = res.data.list.find(item => item.id === itemIdToFind);
         if (item) {
           var subtotalEl = document.querySelector(`.cart-item[data-id="${id}"] .cart-item-subtotal`);
+          var priceFormatEl = document.querySelector(`.cart-item[data-id="${id}"] .cart-item-price`);
           if (subtotalEl) {
             subtotalEl.textContent = item.subtotal_format;
+          }
+          if (priceFormatEl) {
+            priceFormatEl.textContent = item.price_format;
           }
         }
       }

@@ -12,6 +12,7 @@ namespace Plugin\Carousel;
 use Jenssegers\Agent\Agent;
 use Plugin\Carousel\Models\Carousel;
 use Plugin\Carousel\Models\Page;
+use Illuminate\Support\Facades\Log;
 
 class Boot
 {
@@ -41,9 +42,14 @@ class Boot
         });
 
         $pageSlug = str_replace('/', '', request()->getPathInfo());
-        if ($pageSlug == '') {
+
+        // 获取当前语言代码
+        $currentLocale = app()->getLocale();
+
+        // 如果路径是空的（默认首页）或者与当前语言代码匹配（带语言的首页）
+        if ($pageSlug == '' || $pageSlug == $currentLocale) {
             $page     = new Page();
-            $page->id = 0;
+            $page->id = 0; // 首页的 page_id 为 0
         } else {
             $page = Page::where('slug', $pageSlug)->first();
         }

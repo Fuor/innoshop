@@ -9,6 +9,7 @@
 
 namespace InnoShop\Common\Repositories;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use InnoShop\Common\Models\CartItem;
 use InnoShop\Common\Models\Product\Sku;
@@ -43,9 +44,19 @@ class CartItemRepo extends BaseRepo
             $builder->where('guest_id', $guestID);
         }
 
+        $itemType = $filters['item_type'] ?? '';
+        if ($itemType) {
+            $builder->where('item_type', $itemType);
+        }
+
         $selected = $filters['selected'] ?? false;
         if ($selected) {
             $builder->where('selected', true);
+        }
+
+        $reference = $filters['reference'] ?? [];
+        if ($reference) {
+            $builder->whereJsonContains('reference', $reference);
         }
 
         return fire_hook_filter('repo.cart_item.builder', $builder);
@@ -58,11 +69,17 @@ class CartItemRepo extends BaseRepo
      */
     public function create($data): mixed
     {
+        if (system_setting('disable_online_order')) {
+            throw new Exception('The online order is disabled.');
+        }
+
         $data    = $this->handleData($data);
         $filters = [
             'sku_code'    => $data['sku_code'],
             'customer_id' => $data['customer_id'],
             'guest_id'    => $data['guest_id'],
+            'item_type'   => $data['item_type'],
+            'reference'   => $data['reference'],
         ];
 
         $cart = $this->builder($filters)->first();
@@ -99,6 +116,8 @@ class CartItemRepo extends BaseRepo
             'guest_id'    => $customerID ? '' : $guestID,
             'selected'    => true,
             'quantity'    => (int) ($requestData['quantity'] ?? 1),
+            'item_type'   => $requestData['item_type'] ?? 'normal',
+            'reference'   => $requestData['reference'] ?? null,
         ];
     }
 }

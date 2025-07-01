@@ -32,17 +32,25 @@ class Boot
 
         // 3. 注册 resource.cart_list_item 钩子，用于在购物车列表生成时应用阶梯价
         // 优先级设置为 10，确保在 CustomizationOptions 插件的 resource.cart_list_item 钩子之前执行
-        listen_hook_filter('resource.cart_list_item', function ($data) {
-            $sku              = $data['cart']->productSku; // 获取 Sku 模型实例
-            $cartItemQuantity = $data['cart']->quantity; // 获取 CartItem 的数量
+        listen_hook_filter('resource.cart.item', function ($data) {
+            // $data['cart'] 不再存在，需要从 $data 中获取 productSku
+            // 假设 $data['productSku'] 包含了 Sku 模型实例
+            // 如果 $data 中没有 productSku，则需要从 CartItemRepo 重新加载
+            // 但通常情况下，CartListItem 资源会包含 productSku
+            $sku = $data['productSku'] ?? null; // 尝试从 $data 中获取 productSku
+            if (!$sku && isset($data['sku_id'])) { // 如果没有，根据 sku_id 重新加载
+                $sku = SkuModel::find($data['sku_id']);
+            }
+
+            $cartItemQuantity = $data['quantity']; // 直接从 $data 中获取 quantity
 
             // 计算阶梯价格并更新主商品价格
-            if (is_array($sku->ladder_prices) && !empty($sku->ladder_prices)) {
+            if ($sku && is_array($sku->ladder_prices) && !empty($sku->ladder_prices)) {
                 foreach ($sku->ladder_prices as $rule) {
                     if (isset($rule['min_quantity']) && isset($rule['max_quantity']) && isset($rule['price'])) {
                         if ($cartItemQuantity >= $rule['min_quantity'] && $cartItemQuantity <= $rule['max_quantity']) {
-                            $data['data']['price']        = (float)$rule['price']; // 更新价格
-                            $data['data']['price_format'] = currency_format((float)$rule['price']); // 更新格式化价格
+                            $data['price']        = (float)$rule['price']; // 直接更新 $data['price']
+                            $data['price_format'] = currency_format((float)$rule['price']); // 直接更新 $data['price_format']
                             break;
                         }
                     }
@@ -50,13 +58,12 @@ class Boot
             }
 
             // 重新计算 subtotal，包含阶梯价格
-            // 即使没有定制项，也需要更新 subtotal
-            $calculatedSubtotal              = $data['data']['price'] * $cartItemQuantity;
-            $data['data']['subtotal']        = $calculatedSubtotal;
-            $data['data']['subtotal_format'] = currency_format($calculatedSubtotal);
+            $calculatedSubtotal              = $data['price'] * $cartItemQuantity;
+            $data['subtotal']        = $calculatedSubtotal; // 直接更新 $data['subtotal']
+            $data['subtotal_format'] = currency_format($calculatedSubtotal); // 直接更新 $data['subtotal_format']
 
             return $data;
-        }, 10); // 优先级设置为 10
+        }, 10);
 
         // 新增 service.cart.response 钩子，重新计算总金额
         listen_hook_filter('service.cart.response', function ($data) {

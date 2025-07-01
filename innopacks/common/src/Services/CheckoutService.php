@@ -56,6 +56,10 @@ class CheckoutService
      */
     public function __construct(int $customerID = 0, string $guestID = '')
     {
+        if (system_setting('disable_online_order')) {
+            throw new Exception('The online order is disabled.');
+        }
+
         if ($customerID) {
             $this->customerID = $customerID;
         } else {
@@ -118,7 +122,9 @@ class CheckoutService
             'selected' => true,
         ];
 
-        return $this->cartList = CartService::getInstance($this->customerID, $this->guestID)->getCartList($filters);
+        $cartService = CartService::getInstance($this->customerID, $this->guestID);
+
+        return $this->cartList = $cartService->getCartList($filters);
     }
 
     /**
@@ -144,7 +150,7 @@ class CheckoutService
         $weightTotal = 0;
         $cartList    = $this->getCartList();
         foreach ($cartList as $product) {
-            $weightTotal += $product['weight'];
+            $weightTotal += $product['weight'] * $product['quantity'];
         }
 
         return $weightTotal;
@@ -384,6 +390,8 @@ class CheckoutService
      */
     public function getCheckoutResult(): array
     {
+        $this->checkCartStockEnough();
+
         $cartAmount    = $this->getAmount();
         $balanceAmount = $this->getBalanceAmount();
 
@@ -434,6 +442,21 @@ class CheckoutService
     }
 
     /**
+     * Check if all cart items have enough stock
+     *
+     * @throws Exception
+     */
+    protected function checkCartStockEnough(): void
+    {
+        $cartList = $this->getCartList();
+        foreach ($cartList as $item) {
+            if (isset($item['is_stock_enough']) && ! $item['is_stock_enough']) {
+                throw new Exception(trans('front/common.stock_not_enough'));
+            }
+        }
+    }
+
+    /**
      * Confirm checkout and place order.
      *
      * @return mixed
@@ -441,6 +464,8 @@ class CheckoutService
      */
     public function confirm(): mixed
     {
+        $this->checkCartStockEnough();
+
         DB::beginTransaction();
 
         try {
@@ -456,14 +481,15 @@ class CheckoutService
 
             DB::commit();
 
-            $this->checkout->delete();
-            CartService::getInstance($this->customerID)->getCartBuilder(['selected' => true])->delete();
-
             $data = [
-                'checkout_data' => $checkoutData,
-                'order'         => $order,
+                'cart_list' => $this->getCartList(),
+                'checkout'  => $checkoutData,
+                'order'     => $order,
             ];
             fire_hook_action('service.checkout.confirm.after', $data);
+
+            $this->checkout->delete();
+            CartService::getInstance($this->customerID)->getCartBuilder(['selected' => true])->delete();
 
             return $order;
         } catch (Exception $e) {

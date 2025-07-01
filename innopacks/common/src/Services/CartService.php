@@ -9,8 +9,10 @@
 
 namespace InnoShop\Common\Services;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use InnoShop\Common\Models\CartItem;
 use InnoShop\Common\Models\Order;
 use InnoShop\Common\Repositories\CartItemRepo;
 use InnoShop\Common\Resources\CartListItem;
@@ -21,6 +23,8 @@ class CartService
     private int $customerID;
 
     private string $guestID;
+
+    private StockService $stockService;
 
     /**
      * @param  int  $customerID
@@ -39,6 +43,8 @@ class CartService
         } else {
             $this->guestID = current_guest_id();
         }
+
+        $this->stockService = StockService::getInstance();
     }
 
     /**
@@ -74,11 +80,14 @@ class CartService
         return $cartItems->filter(function ($item) {
             if (empty($item->product) || empty($item->productSku)) {
                 $item->delete();
+
+                return false;
             }
 
+            $item->is_stock_enough = $this->stockService->checkStock($item->sku_code, $item->quantity, $item->id);
             fire_hook_action('service.cart.items.item', $item);
 
-            return $item->product && $item->productSku;
+            return true;
         });
     }
 
@@ -100,8 +109,18 @@ class CartService
      */
     public function addCart($data): array
     {
-        $data = $this->mergeAuthId($data);
-        CartItemRepo::getInstance()->create($data);
+        if (! $this->stockService->checkStockBySkuId($data['sku_id'], $data['quantity'] ?? 1)) {
+            throw new Exception(trans('front/common.stock_not_enough'));
+        }
+
+        $data     = $this->mergeAuthId($data);
+        $cartItem = CartItemRepo::getInstance()->create($data);
+
+        // Trigger hook after adding item to cart
+        fire_hook_action('service.cart.add.after', [
+            'cart_item' => $cartItem,
+            'quantity'  => $data['quantity'],
+        ]);
 
         return $this->handleResponse();
     }
@@ -110,11 +129,38 @@ class CartService
      * @param  $cartItem
      * @param  $data
      * @return array
+     * @throws Exception
      */
     public function updateCart($cartItem, $data): array
     {
+        if (! $this->stockService->checkStockByCartItem($cartItem, $data['quantity'])) {
+            throw new Exception(trans('front/common.stock_not_enough'));
+        }
+
         $data = $this->mergeAuthId($data);
         CartItemRepo::getInstance()->update($cartItem, $data);
+
+        // Trigger hook after updating cart item
+        fire_hook_action('service.cart.update.after', [
+            'cart_item' => $cartItem,
+            'quantity'  => $data['quantity'] ?? $cartItem->quantity,
+        ]);
+
+        return $this->handleResponse();
+    }
+
+    /**
+     * Delete cart item
+     *
+     * @param  CartItem  $cartItem
+     * @return array
+     */
+    public function delete(CartItem $cartItem): array
+    {
+        $cartItem->delete();
+
+        // Trigger cart item deleted event
+        fire_hook_action('service.cart.delete.after', $cartItem);
 
         return $this->handleResponse();
     }

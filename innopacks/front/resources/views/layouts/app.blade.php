@@ -36,14 +36,6 @@
       isLogin: !!{{ current_customer()->id ?? 'null' }},
     }
 
-    let translations = {
-      empty_cart: '{{ __('front/cart.empty_cart') }}',
-      continue: '{{ __('front/cart.continue') }}',
-      total: '{{ __('front/cart.total') }}',
-      go_checkout: '{{ __('front/cart.go_checkout') }}',
-      view_cart: '{{ __('front/cart.view_cart') }}',
-    }
-
     let asset_url = '{{ asset('') }}';
   </script>
   @stack('header')
@@ -63,18 +55,16 @@
     @include('layouts.footer')
   @endif
 
-  <!-- Cart Offcanvas (Desktop only) -->
   @if (!request('iframe'))
     @php
       $cartData = \InnoShop\Common\Services\CartService::getInstance()->getCartList();
       $list = $cartData['list'] ?? [];
       $amount_format = $cartData['amount_format'] ?? '0.00';
     @endphp
-    @include('components.cart-offcanvas', ['list' => $list, 'amount_format' => $amount_format])
+    @include('components.mini-cart', ['cartItems' => [], 'totalAmount' => 11])
   @endif
 
   @stack('footer')
-  @stack('scripts')
 </body>
 
 </html>

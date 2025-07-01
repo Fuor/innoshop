@@ -48,6 +48,9 @@ return [
     'link'              => 'Link',
     'list'              => 'List',
     'logo'              => 'Logo',
+    'market'            => 'Marketplace',
+    'market_plugin'     => 'Plugin Market',
+    'market_theme'      => 'Theme Market',
     'meta_description'  => 'Meta Description',
     'meta_keywords'     => 'Meta Keyword',
     'meta_title'        => 'Meta Title',
@@ -74,5 +77,5 @@ return [
     'view'              => 'View',
     'viewed'            => 'Viewed',
     'whether_enable'    => 'Enabled',
-    'yes'               => 'yes',
+    'yes'               => 'Yes',
 ];

@@ -12,7 +12,7 @@
             </button>
           </div>
           <div>
-            <select class="form-select form-select-sm  ">
+            <select class="form-select form-select-sm">
               <option value="all">{{ __('panel/product.other_all') }}</option>
               @foreach (locales() as $locale)
                 <option value="{{ $locale->code }}">{{ $locale->name }}</option>
@@ -22,8 +22,9 @@
         @endif
         @if ($generate ?? false)
           <div class="ms-3">
-            <a class="btn btn-success btn-sm ai-generate"
-               data-column="{{ $column ?? '' }}">{{ __('panel/common.ai_generate') }}</a>
+            <a class="btn btn-success btn-sm ai-generate" data-column="{{ $column ?? '' }}" data-lang="{{ $localeCode ?? '' }}">
+              {{ __('panel/common.ai_generate') }}
+            </a>
           </div>
         @endif
       </div>

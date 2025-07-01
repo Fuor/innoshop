@@ -47,10 +47,7 @@ class ItemRepo extends BaseRepo
 
         $orderItems = [];
         foreach ($items as $item) {
-            // 直接从 $item 中获取 customizations，因为它们现在已经包含在 $data['data'] 中
-            $customizations = $item['customizations'] ?? null;
-
-            $orderItems[] = $this->handleItem($order, $item, $customizations);
+            $orderItems[] = $this->handleItem($order, $item);
         }
         $order->items()->createMany($orderItems);
     }
@@ -60,21 +57,22 @@ class ItemRepo extends BaseRepo
      * @param  $requestData
      * @return array
      */
-    private function handleItem(Order $order, $requestData,  ?array $customizations = null): array
+    private function handleItem(Order $order, $requestData): array
     {
         $sku = Sku::query()->where('code', $requestData['sku_code'])->firstOrFail();
 
         return [
-            'order_id'       => $requestData['order_id'] ?? 0,
-            'product_id'     => $sku->product_id,
-            'order_number'   => $order->number,
-            'product_sku'    => $sku->code,
-            'variant_label'  => $requestData['variant_label'] ?? $sku->variant_label,
-            'name'           => $requestData['product_name'],
-            'image'          => $requestData['image'],
-            'quantity'       => $requestData['quantity'],
-            'price'          => $requestData['price'],
-            'customizations' => $customizations, // 将定制信息保存到新的字段
+            'order_id'      => $order->id,
+            'product_id'    => $sku->product_id,
+            'order_number'  => $order->number,
+            'product_sku'   => $sku->code,
+            'variant_label' => $sku->variant_label,
+            'name'          => $requestData['product_name'] ?? '',
+            'image'         => $requestData['image']        ?? '',
+            'quantity'      => $requestData['quantity'],
+            'price'         => $requestData['price'],
+            'item_type'     => $requestData['item_type'] ?? 'normal',
+            'reference'     => $requestData['reference'] ?? null,
         ];
     }
 }

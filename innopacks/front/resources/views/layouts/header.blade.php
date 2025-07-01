@@ -36,8 +36,13 @@
       <div class="top-info">
         @hookinsert('layouts.header.news.before')
         <a href="{{ front_route('articles.index') }}">News</a>
+
         @hookupdate('layouts.header.telephone')
-        <span><i class="bi bi-telephone-outbound"></i> {{ system_setting('telephone') }}</span>
+        @if (system_setting('telephone'))
+          <a href="tel:{{ system_setting('telephone') }}">
+            <span><i class="bi bi-telephone-outbound"></i> {{ system_setting('telephone') }}</span>
+          </a>
+        @endif
         @endhookupdate
       </div>
     </div>
@@ -130,9 +135,10 @@
           </div>
           <div class="item">
             <a href="javascript:void(0)" class="header-cart-icon" data-bs-toggle="offcanvas"
-               data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas"><img src="{{ asset('images/icons/cart.svg') }}"
-                                                                                  class="img-fluid" alt="cart"><span
-                class="icon-quantity">0</span></a>
+               data-bs-target="#miniCart" aria-controls="miniCart">
+              <img src="{{ asset('images/icons/cart.svg') }}" class="img-fluid" alt="cart">
+              <span class="icon-quantity">0</span>
+            </a>
           </div>
           @hookinsert('layouts.header.cart.after')
         </div>

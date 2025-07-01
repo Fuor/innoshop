@@ -1,6 +1,8 @@
+<!-- Logistics Information Settings -->
+<div class="tab-pane fade" id="tab-setting-logistics-information">
 <div class="container">
   <div class="row">
-    <div class="ml-4" id="app-form">
+    <div class="ml-4" id="logistics-form">
       <div class="row col-7">
         <table class="table table-response align-middle table-bordered">
           <thead>
@@ -34,47 +36,46 @@
   </div>
 </div>
 
-<form class="needs-validation" id="app-form">
-  <!-- Always include an empty logistics array if there are no items -->
-  <input type="hidden" name="logistics" value="[]" v-if="text.length === 0" />
-  <div v-for="(item, index) in text" :key="index">
-    <input type="hidden" :name="'logistics[' + index + '][company]'" :value="item.company"/>
-    <input type="hidden" :name="'logistics[' + index + '][code]'" :value="item.code"/>
-  </div>
-</form>
+<input type="hidden" name="logistics" :value="JSON.stringify(text)" />
 
 <script>
-  const {createApp, ref} = Vue;
+  const {createApp, ref, watch} = Vue;
   const {CirclePlusFilled} = ElementPlus;
 
-  const app = createApp({
+  const logisticsApp = createApp({
     setup() {
       const logisticsData = @json(system_setting('logistics')) || [];
       const text = ref(Array.isArray(logisticsData) ? logisticsData.map(logistic => ({
-        company: logistic.company,
-        code: logistic.code
+        company: logistic.company || '',
+        code: logistic.code || ''
       })) : []);
+
       const addInput = () => {
-        const newId = text.value.length + 1;
         text.value.push({
           company: '',
           code: ''
         });
       };
+
       const removeInput = (index) => {
         text.value.splice(index, 1);
       };
-      const printData = () => {
-        const formData = new FormData(document.getElementById('app-form'));
-      }
+
+      watch(text, (newValue) => {
+        const logisticsInput = document.querySelector('input[name="logistics"]');
+        if (logisticsInput) {
+          logisticsInput.value = JSON.stringify(newValue || []);
+        }
+      }, { deep: true });
+
       return {
         text,
         addInput,
-        removeInput,
-        printData
+        removeInput
       };
     }
   });
-  app.use(ElementPlus);
-  app.mount('#app-form');
+  logisticsApp.use(ElementPlus);
+  logisticsApp.mount('#logistics-form');
 </script>
+</div>

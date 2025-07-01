@@ -49,13 +49,23 @@ class Boot
         });
 
         // 扩展购物车列表资源数据
-        listen_hook_filter('resource.cart_list_item', function ($data) {
-            $cartItem = $data['cart'];
-            if (isset($cartItem->reference)) {
-                $reference = is_string($cartItem->reference) ? json_decode(
+        listen_hook_filter('resource.cart.item', function ($data) {
+            // $data['cart'] 不再存在，需要从 $data 中获取原始 CartItem 模型的 ID
+            // 假设 $data['id'] 是 CartItem 的 ID
+            $cartItem = \InnoShop\Common\Models\CartItem::find($data['id']); // 根据 ID 重新加载 CartItem 模型
+
+            if ($cartItem && isset($cartItem->reference)) { // 检查重新加载的 $cartItem
+                $existingReference = is_string($cartItem->reference) ? json_decode(
                     $cartItem->reference,
                     true
                 ) : $cartItem->reference;
+
+                // 确保 $existingReference 是一个数组
+                if (!is_array($existingReference)) {
+                    $existingReference = [];
+                }
+
+                $reference = $existingReference; // 从现有 reference 中获取所有数据
                 if (isset($reference['customizations'])) {
                     // 为每个定制项添加价格信息
                     $processedCustomizations = [];
@@ -71,17 +81,17 @@ class Boot
                             'price' => $customItemPrice, // 保存下单时的单价
                         ];
                     }
-                    $data['data']['customizations'] = $processedCustomizations; // 更新 customizations 字段
+                    $data['customizations'] = $processedCustomizations; // 直接更新 $data['customizations']
 
-                    $data['data']['customization_fee'] = $customizationFee = $this->calculateItemCustomizationFee(
+                    $data['customization_fee'] = $customizationFee = $this->calculateItemCustomizationFee(
                         $reference['customizations']
                     );
 
                     // 将定制费用加入到subtotal中
-                    $originalSubtotal                = $data['data']['price'] * $cartItem->quantity;
-                    $newSubtotal                     = $originalSubtotal + ($customizationFee * $cartItem->quantity);
-                    $data['data']['subtotal']        = $newSubtotal;
-                    $data['data']['subtotal_format'] = currency_format($newSubtotal);
+                    $originalSubtotal        = $data['subtotal']; // 直接从 $data 中获取 subtotal
+                    $newSubtotal             = $originalSubtotal + ($customizationFee * $data['quantity']); // 直接从 $data 中获取 quantity
+                    $data['subtotal']        = $newSubtotal; // 直接更新 $data['subtotal']
+                    $data['subtotal_format'] = currency_format($newSubtotal); // 直接更新 $data['subtotal_format']
 
                     // 为每个定制项创建单独的“虚拟”行项目
                     foreach ($reference['customizations'] as $key => $value) {
@@ -97,19 +107,23 @@ class Boot
                         }
 
                         if ($customItemPrice > 0) {
-                            $data['data']['children'][] = [
-                                'id'              => 'custom_' . $cartItem->id . '_' . $key, // 唯一ID
-                                'product_name'    => '',// 定制项没有产品名称
+                            $data['children'][] = [ // 直接更新 $data['children']
+                                'id'              => 'custom_' . $cartItem->id . '_' . $key, // 使用重新加载的 $cartItem->id
+                                'product_name'    => '',
                                 'sku_code'        => $customItemTitle . ' : ' . $value,
-                                'quantity'        => $data['data']['quantity'], // 定制项数量与产品数量一致
+                                'quantity'        => $data['quantity'],
                                 'price'           => $customItemPrice,
                                 'price_format'    => currency_format($customItemPrice),
-                                'subtotal'        => $customItemPrice * $data['data']['quantity'],
-                                'subtotal_format' => currency_format($customItemPrice * $data['data']['quantity']),
-                                'is_custom_item'  => true, // 标记为定制项
+                                'subtotal'        => $customItemPrice * $data['quantity'],
+                                'subtotal_format' => currency_format($customItemPrice * $data['quantity']),
+                                'is_custom_item'  => true,
                             ];
                         }
                     }
+
+                    // 关键修改：合并 customizations 到现有 reference 中
+                    $reference['customizations'] = $processedCustomizations;
+                    $data['reference']           = json_encode($reference); // 将合并后的 reference 编码回 JSON
                 }
             }
             return $data;
@@ -149,6 +163,11 @@ class Boot
         // 在结账页面产品信息后显示定制选项
         listen_blade_insert('checkout.product_item.after_sku', function ($data) {
             return view('CustomizationOptions::front.checkout_customization_hook', $data);
+        });
+
+        // 在订单详情页面产品信息后显示定制选项
+        listen_blade_insert('panel.orders.info.order_items.list.after', function ($data) {
+            return view('CustomizationOptions::panel.customizations_lists', $data);
         });
     }
 

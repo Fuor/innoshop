@@ -8,6 +8,8 @@
  */
 
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Detection\Exception\MobileDetectException;
+use Detection\MobileDetect;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +26,7 @@ use InnoShop\Common\Repositories\CurrencyRepo;
 use InnoShop\Common\Repositories\LocaleRepo;
 use InnoShop\Common\Repositories\SettingRepo;
 use InnoShop\Common\Services\ImageService;
+use InnoShop\Common\Support\Registry;
 
 if (! function_exists('load_settings')) {
     /**
@@ -90,6 +93,38 @@ if (! function_exists('system_setting_locale')) {
     }
 }
 
+if (! function_exists('locale_image')) {
+    /**
+     * Get locale image
+     *
+     * @param  string  $code
+     * @return string
+     * @throws Exception
+     */
+    function locale_image(string $code): string
+    {
+        $locale = locales()->where('code', $code)->first();
+
+        return $locale ? $locale->image : '';
+    }
+}
+
+if (! function_exists('locale_name')) {
+    /**
+     * Get locale name by code
+     *
+     * @param  string  $code
+     * @return string
+     * @throws Exception
+     */
+    function locale_name(string $code): string
+    {
+        $locale = locales()->where('code', $code)->first();
+
+        return $locale ? $locale->name : $code;
+    }
+}
+
 if (! function_exists('is_secure')) {
     /**
      * Check if current env is https
@@ -123,8 +158,8 @@ if (! function_exists('is_mobile')) {
     function is_mobile(): bool
     {
         try {
-            return (new \Detection\MobileDetect)->isMobile();
-        } catch (\Detection\Exception\MobileDetectException $e) {
+            return (new MobileDetect)->isMobile();
+        } catch (MobileDetectException $e) {
             return false;
         }
     }
@@ -191,7 +226,7 @@ if (! function_exists('installed')) {
             if (Schema::hasTable('settings') && file_exists(storage_path('installed'))) {
                 return true;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
 
             return false;
@@ -428,7 +463,7 @@ if (! function_exists('pure_route_name')) {
     {
         $name = request()->route()->getName();
 
-        return str_replace(locale_code().'.front.', '', $name);
+        return str_replace([locale_code().'.front.', 'front.'], '', $name);
     }
 }
 
@@ -716,7 +751,7 @@ if (! function_exists('create_directories')) {
 
             if (! is_dir($path)) {
                 if (! @mkdir($path, 0755, true) && ! is_dir($path)) {
-                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
+                    throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
                 }
             }
         }
@@ -735,7 +770,7 @@ if (! function_exists('front_route')) {
      */
     function front_route($name, mixed $parameters = [], bool $absolute = true): string
     {
-        if (count(locales()) == 1) {
+        if (hide_url_locale()) {
             return route('front.'.$name, $parameters, $absolute);
         }
 
@@ -769,7 +804,7 @@ if (! function_exists('has_front_route')) {
      */
     function has_front_route($name): bool
     {
-        if (count(locales()) == 1) {
+        if (hide_url_locale()) {
             $route = 'front.'.$name;
         } else {
             $route = front_locale_code().'.front.'.$name;
@@ -791,11 +826,22 @@ if (! function_exists('account_route')) {
      */
     function account_route($name, mixed $parameters = [], bool $absolute = true): string
     {
-        if (count(locales()) == 1) {
+        if (hide_url_locale()) {
             return route('front.account.'.$name, $parameters, $absolute);
         }
 
         return route(front_locale_code().'.front.account.'.$name, $parameters, $absolute);
+    }
+}
+
+if (! function_exists('hide_url_locale')) {
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    function hide_url_locale(): bool
+    {
+        return count(locales()) == 1 && system_setting('hide_url_locale');
     }
 }
 
@@ -1102,7 +1148,7 @@ if (! function_exists('parse_attr_filters')) {
         return array_map(function ($item) {
             $itemArr = explode(':', $item);
             if (count($itemArr) != 2) {
-                throw new \Exception('Invalid attribute parameters!');
+                throw new Exception('Invalid attribute parameters!');
             }
 
             return [
@@ -1121,7 +1167,27 @@ if (! function_exists('innoshop_version')) {
      */
     function innoshop_version(): string
     {
-        return ucfirst(config('innoshop.edition')).' v'.config('innoshop.version').'('.config('innoshop.build').')';
+        $default = ucfirst(config('innoshop.edition')).' v'.config('innoshop.version').'('.config('innoshop.build').')';
+
+        return fire_hook_filter('innoshop.version.display', $default);
+    }
+}
+
+if (! function_exists('innoshop_brand_link')) {
+    /**
+     * Get innoshop brand link
+     *
+     * @return string
+     */
+    function innoshop_brand_link(): string
+    {
+        if (is_admin()) {
+            $default = '<a href="https://www.innoshop.com" class="ms-2" target="_blank">InnoShop</a>';
+        } else {
+            $default = 'Powered By <a href="https://www.innoshop.com" class="ms-2" target="_blank">InnoShop</a>';
+        }
+
+        return fire_hook_filter('innoshop.brand.link.display', $default);
     }
 }
 
@@ -1156,7 +1222,7 @@ if (! function_exists('seller_enabled')) {
      */
     function seller_enabled(): bool
     {
-        return class_exists(\InnoShop\Seller\SellerServiceProvider::class) && env('SELLER_ENABLED', true);
+        return class_exists('\InnoShop\Seller\SellerServiceProvider') && env('SELLER_ENABLED', true);
     }
 }
 
@@ -1229,5 +1295,38 @@ if (! function_exists('weight_to_default')) {
     function weight_to_default(float $value, string $fromCode): float
     {
         return Weight::getInstance()->toDefault($value, $fromCode);
+    }
+}
+
+if (! function_exists('register')) {
+    /**
+     * Register data to registry
+     *
+     * @param  array|string  $key
+     * @param  mixed  $value
+     */
+    function register(array|string $key, mixed $value): void
+    {
+        if (is_array($key)) {
+            foreach ($key as $k => $v) {
+                Registry::set($k, $v);
+            }
+        }
+
+        Registry::set($key, $value);
+    }
+}
+
+if (! function_exists('registry')) {
+    /**
+     * Get data from registry
+     *
+     * @param  string  $key
+     * @param  mixed|null  $default
+     * @return mixed
+     */
+    function registry(string $key, mixed $default = null): mixed
+    {
+        return Registry::get($key, $default);
     }
 }

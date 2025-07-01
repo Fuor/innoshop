@@ -187,6 +187,8 @@ return new class extends Migration
             $table->string('guest_id')->default('')->comment('Guest ID, like session id');
             $table->boolean('selected')->comment('Selected');
             $table->unsignedInteger('quantity')->comment('Quantity');
+            $table->string('item_type', 20)->default('normal')->comment('Item type: normal|gift');
+            $table->json('reference')->nullable()->comment('Reference information for gifts, promotions, etc.');
             $table->timestamps();
         });
 
@@ -448,6 +450,8 @@ return new class extends Migration
             $table->string('image')->comment('Product Image');
             $table->integer('quantity')->comment('Quantity');
             $table->decimal('price', 16, 4)->comment('Unit Price');
+            $table->string('item_type', 20)->default('normal')->comment('Item type: normal|gift');
+            $table->json('reference')->nullable()->comment('Reference information for gifts, promotions, etc. including parent order item ID');
             $table->timestamps();
             $table->softDeletes()->comment('Deleted At');
         });

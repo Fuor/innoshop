@@ -67,8 +67,11 @@
             @endhookupdate
 
             <div class="stock-wrap">
-              <div class="in-stock badge">{{ __('front/product.in_stock') }}</div>
-              <div class="out-stock badge d-none">{{ __('front/product.out_stock') }}</div>
+              @if($sku['quantity'] > 0)
+                <div class="in-stock badge">{{ __('front/product.in_stock') }}</div>
+              @else
+                <div class="out-stock badge d-none">{{ __('front/product.out_stock') }}</div>
+              @endif
             </div>
 
             <div class="sub-product-title">{{ $product->fallbackName('summary') }}</div>
@@ -100,28 +103,29 @@
             </ul>
 
             @include('products._variants')
-            <div class="product-info-bottom">
-              <div class="quantity-wrap">
-                <div class="minus"><i class="bi bi-dash-lg"></i></div>
-                <input type="number" class="form-control product-quantity" value="1"
-                       data-sku-id="{{ $sku['id'] }}">
-                <div class="plus"><i class="bi bi-plus-lg"></i></div>
-              </div>
 
-              <div class="product-info-btns">
-                @if(system_setting('online_order', true))
-                    <button class="btn btn-primary add-cart" data-id="{{ $product->id }}"
-                            data-price="{{ $product->masterSku->price }}">
-                      {{ __('front/product.add_to_cart') }}
-                    </button>
-                    <button class="btn buy-now ms-2" data-id="{{ $product->id }}"
-                            data-price="{{ $product->masterSku->price }}">
-                      {{ __('front/product.buy_now') }}
-                    </button>
-                @endif
-                @hookinsert('product.detail.cart.after')
+            @if(!system_setting('disable_online_order'))
+              <div class="product-info-bottom">
+                <div class="quantity-wrap">
+                  <div class="minus"><i class="bi bi-dash-lg"></i></div>
+                  <input type="number" class="form-control product-quantity" value="1"
+                         data-sku-id="{{ $sku['id'] }}">
+                  <div class="plus"><i class="bi bi-plus-lg"></i></div>
+                </div>
+                <div class="product-info-btns">
+                  <button class="btn btn-primary add-cart" data-id="{{ $product->id }}"
+                          data-price="{{ $product->masterSku->price }}">
+                    {{ __('front/product.add_to_cart') }}
+                  </button>
+                  <button class="btn buy-now ms-2" data-id="{{ $product->id }}"
+                          data-price="{{ $product->masterSku->price }}">
+                    {{ __('front/product.buy_now') }}
+                  </button>
+                  @hookinsert('product.detail.cart.after')
+                </div>
               </div>
-            </div>
+            @endif
+
             <div class="add-wishlist" data-in-wishlist="{{ $product->hasFavorite() }}"
                  data-id="{{ $product->id }}"
                  data-price="{{ $product->masterSku->price }}">
@@ -146,11 +150,11 @@
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#product-description-attribute"
                     type="button">{{ __('front/product.attribute') }}</button>
           </li>
-          <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#product-review"
-                    type="button">{{ __('front/product.review') }}</button>
-          </li>
         @endif
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#product-review"
+                  type="button">{{ __('front/product.review') }}</button>
+        </li>
         <li class="nav-item">
           <button class="nav-link correlation" data-bs-toggle="tab"
                   data-bs-target="#product-description-correlation"

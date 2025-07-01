@@ -1,11 +1,8 @@
 @if($product->fallbackName())
   <div class="product-grid-item {{ request('style_list') ?? '' }}">
-    <div class="image" style="width: 100%; aspect-ratio: 1/1; overflow: hidden;">
-      <a href="{{ $product->url }}" style="display: block; height: 100%;">
-        <img src="{{ $product->image_url }}" class="img-fluid" alt="{{ $product->fallbackName() }}"
-             loading="lazy"
-             style="width: 100%; height: 100%; object-fit: contain;"
-        >
+    <div class="image">
+      <a href="{{ $product->url }}">
+        <img src="{{ $product->image_url }}" class="img-fluid">
       </a>
       <div class="wishlist-container add-wishlist" data-in-wishlist="{{ $product->hasFavorite() }}"
            data-id="{{ $product->id }}" data-price="{{ $product->masterSku->price }}">
@@ -27,12 +24,14 @@
       @endif
 
       <div class="product-bottom">
-        <div class="product-bottom-btns">
-          <div class="btn-add-cart cursor-pointer" data-id="{{ $product->id }}"
+        @if(!system_setting('disable_online_order'))
+          <div class="product-bottom-btns">
+            <div class="btn-add-cart cursor-pointer" data-id="{{ $product->id }}"
                data-price="{{ $product->masterSku->getFinalPrice() }}"
                data-sku-id="{{ $product->masterSku->id }}">{{ __('front/cart.add_to_cart') }}
+            </div>
           </div>
-        </div>
+        @endif
         <div class="product-price">
           @if ($product->masterSku->origin_price)
             <div class="price-old">{{ $product->masterSku->origin_price_format }}</div>

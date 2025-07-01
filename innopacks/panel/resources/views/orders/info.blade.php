@@ -88,6 +88,9 @@
                   @if($item->productSku->variantLabel ?? '')
                     <span class="small fst-italic">{{ $item->productSku->variantLabel }}</span>
                   @endif
+                  @if($item->item_type_label)
+                    <span class="badge bg-danger">{{ $item->item_type_label }}</span>
+                  @endif
                 </div>
               </div>
             </td>
@@ -97,30 +100,7 @@
             <td>{{ $item->subtotal_format }}</td>
           </tr>
 
-          {{-- 显示定制项 --}}
-          @if (isset($item->customizations) && is_array($item->customizations))
-            @foreach ($item->customizations as $key => $detail) {{-- 遍历包含价格的定制项 --}}
-              @php
-                $label = ($key === 'custom_name') ? __('CustomizationOptions::common.customize_name') : __('CustomizationOptions::common.customize_number');
-                $fee = $detail['price'] ?? 0; // 从保存的定制信息中获取单价
-                $customizationTotalFee = $fee * $item->quantity;
-              @endphp
-
-              <tr>
-                <td></td>
-                <td><span class="small text-secondary">{{ $label }}</span></td>
-                <td><span class="small text-secondary">{{ $detail['value'] }}</span></td>
-                <td></td>
-                <td>
-                  <span class="small text-secondary">
-                  {{ currency_format($fee, $order->currency_code, $order->currency_value) }}
-                  </span>
-                </td>
-                <td><span class="small text-secondary">{{currency_format($customizationTotalFee, $order->currency_code, $order->currency_value)}}</span>
-                </td>
-              </tr>
-            @endforeach
-          @endif
+          @hookinsert('panel.orders.info.order_items.list.after', $item, $order)
 
         @endforeach
         @foreach ($order->fees as $total)
@@ -347,7 +327,7 @@
             <div class="mb-3">
               <label for="logisticsCompany" class="form-label">{{ __('panel/order.express_company') }}</label>
               <select class="form-control" id="logisticsCompany">
-                @foreach(system_setting('logistics', []) as $expressCompany)
+                @foreach(is_array(system_setting('logistics', [])) ? system_setting('logistics', []) : [] as $expressCompany)
                   <option value="{{ $expressCompany['code'] }}">{{ $expressCompany['company'] }}</option>
                 @endforeach
               </select>

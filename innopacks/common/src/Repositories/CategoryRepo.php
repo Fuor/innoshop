@@ -11,6 +11,7 @@ namespace InnoShop\Common\Repositories;
 
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use InnoShop\Common\Handlers\TranslationHandler;
 use InnoShop\Common\Models\Category;
@@ -19,6 +20,13 @@ use Throwable;
 
 class CategoryRepo extends BaseRepo
 {
+    public function getActiveCategories($limit = 10): Collection
+    {
+        $filters = ['active' => true];
+
+        return $this->builder($filters)->limit($limit)->get();
+    }
+
     /**
      * @param  array|null  $categoryIDs
      * @return array
@@ -322,5 +330,23 @@ class CategoryRepo extends BaseRepo
         }
 
         return $this->create($data);
+    }
+
+    /**
+     * Summary of getCategoryOptions
+     *
+     * @return array
+     */
+    public function getCategoryOptions(): array
+    {
+        $categories = $this->getActiveCategories();
+        foreach ($categories as $category) {
+            $options[] = [
+                'id'   => $category->id,
+                'name' => $category->fallbackName(),
+            ];
+        }
+
+        return $options;
     }
 }

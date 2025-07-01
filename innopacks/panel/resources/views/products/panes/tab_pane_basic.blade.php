@@ -99,7 +99,7 @@
           {{ __('panel/product.multiple_spec_notice') }}
         </div>
         @include('panel::products.form._form_variant')
-        @hookinsert('panel.product.edit.form_variant.after')
+        @hookinsert('panel.product.edit.form_variant.after', $product)
       </div>
     </div>
   </div>

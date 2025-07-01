@@ -1,8 +1,11 @@
 @if($product->fallbackName())
   <div class="product-grid-item {{ request('style_list') ?? '' }}">
-    <div class="image">
-      <a href="{{ $product->url }}">
-        <img src="{{ $product->image_url }}" class="img-fluid">
+    <div class="image" style="width: 100%; aspect-ratio: 1/1; overflow: hidden;">
+      <a href="{{ $product->url }}" style="display: block; height: 100%;">
+        <img src="{{ $product->image_url }}" class="img-fluid" alt="{{ $product->fallbackName() }}"
+             loading="lazy"
+             style="width: 100%; height: 100%; object-fit: contain;"
+        >
       </a>
       <div class="wishlist-container add-wishlist" data-in-wishlist="{{ $product->hasFavorite() }}"
            data-id="{{ $product->id }}" data-price="{{ $product->masterSku->price }}">

@@ -1,6 +1,7 @@
 @if($product->fallbackName())
   <div class="product-grid-item {{ request('style_list') ?? '' }}">
     <div class="image" style="width: 100%; aspect-ratio: 1/1; overflow: hidden;">
+      @hookinsert('product.list_item.image.before')
       <a href="{{ $product->url }}" style="display: block; height: 100%;">
         <img src="{{ $product->image_url }}" class="img-fluid" alt="{{ $product->fallbackName() }}"
              loading="lazy"

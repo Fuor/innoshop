@@ -33,10 +33,6 @@ class Boot
         // 3. 注册 resource.cart_list_item 钩子，用于在购物车列表生成时应用阶梯价
         // 优先级设置为 10，确保在 CustomizationOptions 插件的 resource.cart_list_item 钩子之前执行
         listen_hook_filter('resource.cart.item', function ($data) {
-            // $data['cart'] 不再存在，需要从 $data 中获取 productSku
-            // 假设 $data['productSku'] 包含了 Sku 模型实例
-            // 如果 $data 中没有 productSku，则需要从 CartItemRepo 重新加载
-            // 但通常情况下，CartListItem 资源会包含 productSku
             $sku = $data['productSku'] ?? null; // 尝试从 $data 中获取 productSku
             if (!$sku && isset($data['sku_id'])) { // 如果没有，根据 sku_id 重新加载
                 $sku = SkuModel::find($data['sku_id']);

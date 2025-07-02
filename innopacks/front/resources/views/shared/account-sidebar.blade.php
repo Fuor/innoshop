@@ -1,11 +1,16 @@
 <div class="account-sidebar">
-  <div class="account-user">
+  <div class="account-user flex-column">
     <div class="profile"><img src="{{ image_resize($customer->avatar) }}" class="img-fluid"></div>
     <div class="account-name">
       <div class="fw-bold name">{{ __('front/account.hello') }}, {{ $customer->name }}</div>
       <div class="text-secondary email">{{ $customer->email }}</div>
     </div>
+    @hookinsert('front.account.sidebar.avatar.after', $customer)
   </div>
+  <button class="toggle-links-btn text-primary">
+    <i class="bi bi-list"></i>
+    <span class="small">Menu</span>
+  </button>
   <ul class="account-links">
     <li class="{{ equal_route_name('front.account.index') ? 'active' : '' }}">
       <a href="{{ account_route('index') }}"><i class="bi bi-person"></i>{{ front_trans('account.account') }}</a>
@@ -23,13 +28,13 @@
       </a>
     </li>
     @hookinsert('front.account.sidebar.favorites.after')
-    
+
     <li class="{{ equal_route_name('front.account.transactions.index') ? 'active' : '' }}">
       <a href="{{ account_route('transactions.index') }}"><i class="bi bi-wallet"></i>{{ front_trans('account.transactions') }}
       </a>
     </li>
     @hookinsert('front.account.sidebar.transactions.after')
-    
+
     <li class="{{ equal_route_name('front.account.reviews.index') ? 'active' : '' }}">
       <a href="{{ account_route('reviews.index') }}"><i class="bi bi-chat-dots"></i>{{ front_trans('account.reviews') }}
       </a>
@@ -63,3 +68,11 @@
     <li><a href="{{ account_route('logout') }}"><i class="bi bi-box-arrow-left"></i>{{ front_trans('account.logout') }}</a></li>
   </ul>
 </div>
+@push('footer')
+  <script>
+    document.querySelector('.toggle-links-btn').addEventListener('click', function () {
+      const links = document.querySelector('.account-links');
+      links.classList.toggle('show');
+    });
+  </script>
+@endpush

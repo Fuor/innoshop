@@ -57,11 +57,11 @@
 
   @if (!request('iframe'))
     @php
-      $cartData = \InnoShop\Common\Services\CartService::getInstance()->getCartList();
-      $list = $cartData['list'] ?? [];
-      $amount_format = $cartData['amount_format'] ?? '0.00';
+      $cartData     = \InnoShop\Common\Services\CartService::getInstance()->getCartList();
+      $list         = $cartData['list'] ?? [];
+      $amountFormat = $cartData['amount_format'] ?? '0.00';
     @endphp
-    @include('components.mini-cart', ['cartItems' => [], 'totalAmount' => 11])
+    @include('components.mini-cart', ['cartItems' => $list, 'totalAmount' => $amountFormat])
   @endif
 
   @stack('footer')

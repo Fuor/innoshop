@@ -170,9 +170,7 @@
           list.value = data.list
           total.value = data.total_format
           amount_format.value = data.amount_format
-          document.querySelectorAll('.header-cart-icon .icon-quantity').forEach(el => {
-            el.textContent = data.total_format
-          })
+          $('.header-cart-icon .icon-quantity').text(data.total_format)
         }
 
         const updateQuantity = async (id, quantity) => {

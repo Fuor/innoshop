@@ -9,32 +9,25 @@ class Boot
 {
     public function init(): void
     {
-        // 完全替换CartService类的静态调用
-        app()->singleton(\InnoShop\Common\Services\CartService::class, function ($app, $parameters) {
-            return new \Plugin\CustomizationOptions\Services\ExtendedCartService(
-                $parameters['customerID'] ?? 0,
-                $parameters['guestID'] ?? ''
-            );
-        });
-
         // 拦截购物车存储请求
         listen_hook_action('front.cart.store.before', function ($request) {
             $customizations = $request->get('customizations');
             if ($customizations) {
-                // 直接处理定制选项数据
-                $this->handleCustomizationCart($request->all());
+                // 获取现有 reference 数据，避免覆盖
+                $existingReference = $request->get('reference', []);
+                if (is_string($existingReference)) {
+                    $existingReference = json_decode($existingReference, true) ?? [];
+                }
 
-                // 构建响应数据
-                $cartService  = \InnoShop\Common\Services\CartService::getInstance();
-                $responseData = $cartService->handleResponse();
+                // 合并定制项到 reference
+                $existingReference['customizations'] = $customizations;
 
-                // 直接返回JSON响应，阻止原始处理
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'Saved successfully',
-                    'data'    => $responseData
-                ]);
-                exit; // 强制停止后续处理
+                // 更新请求中的 reference 字段
+                $request->merge(['reference' => $existingReference]);
+
+                // 移除 request 中的 customizations 字段，避免重复处理
+                $request->offsetUnset('customizations');
+
             }
         });
 
@@ -169,6 +162,16 @@ class Boot
         listen_blade_insert('panel.orders.info.order_items.list.after', function ($data) {
             return view('CustomizationOptions::panel.customizations_lists', $data);
         });
+
+        // 在前台订单详情页面产品信息后显示定制选项
+        listen_blade_insert('front.orders.info.order_items.list.after', function ($data) {
+            return view('CustomizationOptions::front.customizations_lists', $data);
+        });
+
+        // 侧边栏购物车产品信息后显示定制选项
+        listen_blade_insert('front.mini_cart.item.customizations', function ($data) {
+            return view('CustomizationOptions::front.minicart_customizations_lists', $data);
+        });
     }
 
     private function calculateItemCustomizationFee($customizations): float|int
@@ -184,12 +187,5 @@ class Boot
         }
 
         return $totalFee;
-    }
-
-    private function handleCustomizationCart($data)
-    {
-        // 使用您的扩展Repository直接处理
-        $extendedRepo = new \Plugin\CustomizationOptions\Services\ExtendedCartItemRepo();
-        return $extendedRepo->create($data);
     }
 }

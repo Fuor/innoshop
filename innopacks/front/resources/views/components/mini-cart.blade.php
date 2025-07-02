@@ -20,9 +20,9 @@
             <div class="d-flex align-items-center me-2">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" :id="'item-' + item.id"
-                       :checked="item.selected"
-                       @change="updateSelection($event.target.checked, [item.id])"
-                       :disabled="item.item_type !== 'normal'">
+                  :checked="item.selected"
+                  @change="updateSelection($event.target.checked, [item.id])"
+                  :disabled="item.item_type !== 'normal'">
               </div>
             </div>
             <div class="flex-shrink-0" style="width: 80px; height: 80px;">
@@ -38,13 +38,7 @@
                 <span v-if="item.item_type !== 'normal'" class="badge bg-danger ms-2">@{{ item.item_type_label }}</span>
               </div>
 
-              <!-- 显示虚拟行项目 (定制费用) -->
-              <div v-if="item.children && item.children.length > 0" class="customization-children-info mt-1">
-                <div v-for="child in item.children" :key="child.id" class="text-secondary small">
-                  @{{ child.sku_code }} x @{{ child.quantity }}
-                  <span class="ms-2">+ @{{ formatCurrency(child.price * child.quantity) }}</span>
-                </div>
-              </div>
+              @hookinsert('front.mini_cart.item.customizations', item)
 
               <div class="d-flex justify-content-between align-items-center mt-2">
                 <div class="d-flex align-items-center gap-2">
@@ -78,8 +72,8 @@
         <div class="d-flex align-items-center mb-3">
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="selectAll"
-                   :checked="allSelected"
-                   @change="toggleSelectAll">
+              :checked="allSelected"
+              @change="toggleSelectAll">
             <label class="form-check-label" for="selectAll">{{ __('front/cart.select_all') }}</label>
           </div>
           <div class="ms-auto">

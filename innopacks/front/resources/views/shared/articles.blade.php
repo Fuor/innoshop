@@ -4,37 +4,37 @@
       @if ($articles->count())
         <div class="newest-box">
           @foreach($articles as $article)
-            <div class="newest-item">
-              <div class="item-img">
-                <a href="{{ $article->url }}">
-                  <img src="{{ image_resize($article->translation->image ?? '', 200, 150) }}" class="img-fluid" alt="{{ $article->translation->title ?? '' }}">
-                </a>
+          <div class="newest-item">
+            <div class="item-img">
+              <a href="{{ $article->url }}">
+                <img src="{{ image_resize($article->translation->image ?? '', 200, 150) }}" class="img-fluid" alt="{{ $article->translation->title ?? '' }}">
+              </a>
+            </div>
+            <div class="item-content d-flex flex-column justify-content-between">
+              <div class="content-top">
+                <div class="item-title mt-2"><a href="{{ $article->url }}">{{ $article->translation->title }}</a></div>
+                @if ($article->tags->count())
+                <div class="newes-tags">
+                  <i class="bi bi-tags me-1"></i>
+                  <div class="d-flex">
+                    @foreach($article->tags as $tag)
+                      <a href="{{ $tag->url }}">{{ $tag->translation->name ?? '' }}</a>
+                    @endforeach
+                  </div>
+                </div>
+                @endif
+                <div class="item-summary">{{ sub_string($article->translation->summary, 180) }}</div>
               </div>
-              <div class="item-content d-flex flex-column justify-content-between">
-                <div class="content-top">
-                  <div class="item-title"><a href="{{ $article->url }}">{{ $article->translation->title }}</a></div>
-                  @if ($article->tags->count())
-                    <div class="newes-tags">
-                      <i class="bi bi-tags me-1"></i>
-                      <div class="d-flex">
-                        @foreach($article->tags as $tag)
-                          <a href="{{ $tag->url }}">{{ $tag->translation->name ?? '' }}</a>
-                        @endforeach
-                      </div>
-                    </div>
-                  @endif
-                  <div class="item-summary">{{ $article->translation->summary }}</div>
-                </div>
-                <div class="item-date text-secondary">
-                  <span><i class="bi bi-clock"></i> {{ $article->created_at->format('Y-m-d') }}</span>
-                  <span class="ms-3"><i class="bi bi-eye"></i> {{ $article->viewed }}</span>
-                </div>
+              <div class="item-date text-secondary">
+                <span><i class="bi bi-clock"></i> {{ $article->created_at->format('Y-m-d') }}</span>
+                <span class="ms-3"><i class="bi bi-eye"></i> {{ $article->viewed }}</span>
               </div>
             </div>
+          </div>
           @endforeach
         </div>
       @else
-        @include('shared.no-data', ['text' => '没有数据 ~'])
+        @include('shared.no-data', ['text' => 'No data ~'])
       @endif
     </div>
     <div class="col-12 col-md-3">
@@ -53,7 +53,7 @@
               <ul>
                 @foreach($catalogs as $catalog)
                   <li><a
-                      href="{{ $catalog->url }}">{{ $catalog->translation->title ?? '' }}</a>
+                        href="{{ $catalog->url }}">{{ $catalog->translation->title ?? '' }}</a>
                   </li>
                 @endforeach
               </ul>
@@ -63,7 +63,7 @@
 
         @if(isset($tags) && $tags)
           <div class="sidebar-item">
-            <div class="sidebar-title">新闻标签</div>
+            <div class="sidebar-title">News Tags</div>
             <div class="sidebar-list">
               <ul>
                 @foreach($tags as $tag)

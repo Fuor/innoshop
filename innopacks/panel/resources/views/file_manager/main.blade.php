@@ -1494,7 +1494,7 @@
                               预览
                             </div>
                             <el-image :ref="'image-' + file.id" :src="file.url" :alt="file.name"
-                              fit="contain" :preview-src-list="[file.url]">
+                              fit="contain" :preview-src-list="[file.origin_url || file.url]">
                             </el-image>
                           </div>
                         </template>
@@ -1951,7 +1951,7 @@
         loadFiles(path = null) {
           this.loading = true;
           const currentPath = path !== null ? path : (this.currentFolder ? this.currentFolder.path : '/');
-          
+
           const params = {
             page: this.pagination.page,
             per_page: this.pagination.per_page,
@@ -2001,7 +2001,7 @@
           formData.append('file', file);
           formData.append('path', path);
           formData.append('type', type);
-          
+
           return http.post('file_manager/upload', formData)
             .then(res => {
               if (res.success) {

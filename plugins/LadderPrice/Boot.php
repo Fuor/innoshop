@@ -1,14 +1,10 @@
 <?php
-/**
- * @Desc:
- * @Author: 黄辉全
- * @Time: 2025/6/26 16:04
- */
 
 namespace Plugin\LadderPrice;
 
 use Plugin\LadderPrice\Listeners\ProductSaveListener;
 use InnoShop\Common\Models\Product\Sku as SkuModel;
+use Plugin\LadderPrice\Middleware\HandleLadderPriceRequest;
 
 // 引入 Sku 模型
 
@@ -17,7 +13,7 @@ class Boot
     public function init(): void
     {
         // 在商品编辑页面的价格区域下方插入阶梯价格表单
-        listen_blade_insert('panel.product.edit.form.after', function ($data) {
+        listen_blade_insert('panel.product.edit.form_single.after', function ($data) {
             // 确保 $product 变量可用
             $product = $data['product'] ?? null;
             if ($product) {
@@ -26,18 +22,10 @@ class Boot
             return '';
         });
 
-        // 监听商品保存后的事件，更新 SKU 的阶梯价格
-        listen_hook_filter('common.repo.product.update.after', [ProductSaveListener::class, 'handle'], 20, 1);
-        listen_hook_filter('common.repo.product.create.after', [ProductSaveListener::class, 'handle'], 20, 1);
-
         // 3. 注册 resource.cart_list_item 钩子，用于在购物车列表生成时应用阶梯价
         // 优先级设置为 10，确保在 CustomizationOptions 插件的 resource.cart_list_item 钩子之前执行
         listen_hook_filter('resource.cart.item', function ($data) {
-            $sku = $data['productSku'] ?? null; // 尝试从 $data 中获取 productSku
-            if (!$sku && isset($data['sku_id'])) { // 如果没有，根据 sku_id 重新加载
-                $sku = SkuModel::find($data['sku_id']);
-            }
-
+            $sku              = $data['productSku'] ?? null; // 尝试从 $data 中获取 productSku
             $cartItemQuantity = $data['quantity']; // 直接从 $data 中获取 quantity
 
             // 计算阶梯价格并更新主商品价格
@@ -46,7 +34,9 @@ class Boot
                     if (isset($rule['min_quantity']) && isset($rule['max_quantity']) && isset($rule['price'])) {
                         if ($cartItemQuantity >= $rule['min_quantity'] && $cartItemQuantity <= $rule['max_quantity']) {
                             $data['price']        = (float)$rule['price']; // 直接更新 $data['price']
-                            $data['price_format'] = currency_format((float)$rule['price']); // 直接更新 $data['price_format']
+                            $data['price_format'] = currency_format(
+                                (float)$rule['price']
+                            ); // 直接更新 $data['price_format']
                             break;
                         }
                     }
@@ -54,7 +44,7 @@ class Boot
             }
 
             // 重新计算 subtotal，包含阶梯价格
-            $calculatedSubtotal              = $data['price'] * $cartItemQuantity;
+            $calculatedSubtotal      = $data['price'] * $cartItemQuantity;
             $data['subtotal']        = $calculatedSubtotal; // 直接更新 $data['subtotal']
             $data['subtotal_format'] = currency_format($calculatedSubtotal); // 直接更新 $data['subtotal_format']
 

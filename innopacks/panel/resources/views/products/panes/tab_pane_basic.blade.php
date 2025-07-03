@@ -109,6 +109,7 @@
           <input type="hidden" name="skus[0][model]" value="">
           <input type="hidden" name="skus[0][is_default]" value="1">
         </div>
+        @hookinsert('panel.product.edit.form_single.after', $product)
       </div>
 
       <!-- Variant -->

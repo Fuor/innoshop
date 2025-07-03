@@ -8,7 +8,7 @@
 @if(is_array($sku['ladder_prices']) && !empty($sku['ladder_prices']))
   <div class="ladder-price-table-wrap mt-3">
     <h6 class="mb-2 text-primary">{{ __('LadderPrice::front.ladder_price_rules') }}</h6>
-    <p class="ladder-price-description">
+    <p class="ladder-price-description" id="ladder-price-description-text">
       @php
         $descriptions = [];
         foreach ($sku['ladder_prices'] as $rule) {
@@ -25,19 +25,19 @@
   @push('footer')
     <script>
       $(document).ready(function() {
-        const ladderPrices = @json($sku['ladder_prices']  ?? []);
-        const productQuantityInput = $('.product-quantity'); // 产品数量输入框
-        const priceDisplay = $('#current-display-price'); // 显示当前价格的元素
-        const originalPrice = parseFloat('{{ $sku['price'] }}'); // 获取 SKU 的原始价格（未格式化）
+        let currentLadderPrices = @json($sku['ladder_prices']  ?? []);
+        const productQuantityInput = $('.product-quantity');
+        const priceDisplay = $('#current-display-price');
+        let currentOriginalPrice = parseFloat('{{ $sku['price'] }}');
+        const ladderPriceDescriptionText = $('#ladder-price-description-text');
 
         function updatePriceDisplay() {
           const currentQuantity = parseInt(productQuantityInput.val());
-          let newPrice = originalPrice; // 默认价格为 SKU 的原始价格
+          let newPrice = currentOriginalPrice;
 
-          if (ladderPrices.length > 0) {
-            for (let i = 0; i < ladderPrices.length; i++) {
-              const rule = ladderPrices[i];
-              // 确保规则的 min_quantity 和 max_quantity 是数字
+          if (currentLadderPrices.length > 0) {
+            for (let i = 0; i < currentLadderPrices.length; i++) {
+              const rule = currentLadderPrices[i];
               const minQty = parseInt(rule.min_quantity);
               const maxQty = parseInt(rule.max_quantity);
 
@@ -69,7 +69,31 @@
           return '{{ current_currency()->symbol_left }}' + parseFloat(value).toFixed(2);
         }
 
-        // 初始加载时更新一次价格
+        // 监听 SKU 切换事件
+        $(document).on('skuChanged', function(event, newSku) {
+          console.log('SKU changed:', newSku);
+
+          currentLadderPrices = newSku.ladder_prices ?? [];
+          currentOriginalPrice = parseFloat(newSku.price); // 使用新的 SKU 价格
+          priceDisplay.text(newSku.price_format); // 更新显示价格为新 SKU 的默认价格
+
+          // 更新阶梯价格描述
+          if (currentLadderPrices.length > 0) {
+            let descriptions = [];
+            currentLadderPrices.forEach(rule => {
+              descriptions.push(`{{ __('LadderPrice::front.full_quantity_price', ['min_quantity' => 'RULE_MIN_QTY', 'price' => 'RULE_PRICE']) }}`
+                .replace('RULE_MIN_QTY', rule.min_quantity)
+                .replace('RULE_PRICE', formatCurrency(rule.price))
+              );
+            });
+            ladderPriceDescriptionText.html(descriptions.join('<br>'));
+          } else {
+            ladderPriceDescriptionText.html('');
+          }
+
+          updatePriceDisplay(); // 重新计算并显示价格
+        });
+
         updatePriceDisplay();
       });
     </script>

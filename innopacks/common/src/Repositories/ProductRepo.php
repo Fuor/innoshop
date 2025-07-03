@@ -594,6 +594,12 @@ class ProductRepo extends BaseRepo
                 $variants = json_decode($variants);
             }
 
+            //阶梯价
+            $ladderPrices = $sku['ladder_prices'] ?? [];
+            if (is_string($ladderPrices)) {
+                $ladderPrices = json_decode($ladderPrices);
+            }
+
             if ($onlyOneSku) {
                 $isDefault = true;
             } else {
@@ -612,6 +618,7 @@ class ProductRepo extends BaseRepo
                 'quantity'     => (int) ($sku['quantity'] ?? 0),
                 'is_default'   => (bool) $isDefault,
                 'position'     => (int) ($sku['position'] ?? 0),
+                'ladder_prices'=> $ladderPrices
             ];
         }
 

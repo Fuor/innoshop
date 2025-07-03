@@ -14,4 +14,5 @@ return [
     'min_quantity'        => '最小数量',
     'max_quantity'        => '最大数量',
     'unit_price'          => '单价',
+    'add_rule'            => '添加规则',
 ];

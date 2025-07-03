@@ -1,3 +1,9 @@
+@php
+  // 确保 $product 存在且有 masterSku
+  $sku = $product->masterSku ?? null;
+  $ladderPrices = $sku->ladder_prices ?? []; // 从 SKU 获取阶梯价格
+@endphp
+
 <div class="card mb-3">
   <div class="card-header">
     <h5 class="card-title mb-0">{{ __('LadderPrice::panel.ladder_prices') }}</h5>
@@ -6,12 +12,12 @@
     <div class="form-group mb-3">
       <label class="form-label">{{ __('LadderPrice::panel.enable_ladder_price') }}</label>
       <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="enable_ladder_price_switch" name="ladder_price_enabled" {{ $product->masterSku->ladder_prices ? 'checked' : '' }}>
+        <input class="form-check-input" type="checkbox" id="enable_ladder_price_switch" name="ladder_price_enabled" {{ !empty($ladderPrices) ? 'checked' : '' }}>
         <label class="form-check-label" for="enable_ladder_price_switch"></label>
       </div>
     </div>
 
-    <div id="ladder-price-rules-container" style="{{ $product->masterSku->ladder_prices ? '' : 'display: none;' }}">
+    <div id="ladder-price-rules-container" style="{{ !empty($ladderPrices) ? '' : 'display: none;' }}">
       <h6 class="mb-3">{{ __('LadderPrice::panel.price_rules') }}</h6>
       <table class="table table-bordered" id="ladder-price-table">
         <thead>
@@ -23,8 +29,8 @@
         </tr>
         </thead>
         <tbody>
-        @if ($product->masterSku->ladder_prices)
-          @foreach ($product->masterSku->ladder_prices as $index => $rule)
+        @if (!empty($ladderPrices))
+          @foreach ($ladderPrices as $index => $rule)
             <tr>
               <td><input type="number" class="form-control min-quantity-input" value="{{ $rule['min_quantity'] ?? 1 }}" min="1"></td>
               <td><input type="number" class="form-control max-quantity-input" value="{{ $rule['max_quantity'] ?? 99999 }}" min="{{ $rule['min_quantity'] ?? 1 }}"></td>
@@ -115,4 +121,4 @@
 @endpush
 
 <!-- 隐藏字段用于提交数据 -->
-<input type="hidden" name="ladder_prices" id="ladder_prices_input" value="{{ json_encode($product->masterSku->ladder_prices ?? []) }}">
+<input type="hidden" name="skus[0][ladder_prices]" id="ladder_prices_input" value="{{ json_encode($product->masterSku->ladder_prices ?? []) }}">

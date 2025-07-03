@@ -6,7 +6,7 @@
  */
 
 return [
-    'ladder_price_rules'  => 'Ladder Price Rules',
+    'ladder_price_rules'  => 'Buy More, Save More',
     'min_quantity'        => 'Minimum Quantity',
     'max_quantity'        => 'Maximum Quantity',
     'unit_price'          => 'Unit Price',

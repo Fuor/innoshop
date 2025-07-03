@@ -6,7 +6,7 @@
  */
 
 return [
-    'ladder_price_rules'  => '阶梯价格规则',
+    'ladder_price_rules'  => '多买，多省',
     'min_quantity'        => '最小数量',
     'max_quantity'        => '最大数量',
     'unit_price'          => '单价',

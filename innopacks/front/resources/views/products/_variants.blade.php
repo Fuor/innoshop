@@ -63,7 +63,10 @@
         $('.product-param .model .value').text(masterSku.model);
         $('.product-price .price').text(masterSku.price_format);
         $('.product-price .old-price').text(masterSku.origin_price_format);
-        $('.product-quantity').data('sku-id', masterSku.id)
+        $('.product-quantity').data('sku-id', masterSku.id);
+
+        // 触发一个自定义事件，通知阶梯价格模块更新显示
+        $(document).trigger('skuChanged', masterSku); // 添加这一行
 
         if (masterSku.origin_image_url) {
           $('.main-product-img img').attr('src', masterSku.origin_image_url);

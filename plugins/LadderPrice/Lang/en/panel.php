@@ -14,4 +14,5 @@ return [
     'min_quantity'        => 'Minimum Quantity',
     'max_quantity'        => 'Maximum Quantity',
     'unit_price'          => 'Unit Price',
+    'add_rule'            => 'Add Rule',
 ];

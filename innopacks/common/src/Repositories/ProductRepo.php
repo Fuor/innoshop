@@ -817,6 +817,7 @@ class ProductRepo extends BaseRepo
             ->whereHas('translation')
             ->withCount('orderItems')
             ->orderByDesc('order_items_count')
+            ->orderByDesc('updated_at')
             ->limit($limit)
             ->get();
     }
@@ -829,6 +830,7 @@ class ProductRepo extends BaseRepo
     public function getLatestProducts(int $limit = 8): mixed
     {
         return $this->withActive()->builder()
+            ->orderByDesc('created_at')
             ->orderByDesc('updated_at')
             ->limit($limit)
             ->get();

@@ -71,7 +71,9 @@
                           </span>
                         </div>
                       </div>
-                      <div class="mb-price mt-1">@{{ item.price_format }}</div>
+                      <div class="mb-price mt-1">
+                        <span class="main-price">@{{ item.price_format }}</span>
+                      </div>
                       <div class="quantity-wrap mt-1 d-lg-none" v-if="item.item_type === 'normal'">
                         <div class="minus" @click="updateQuantity(item.id, item.quantity - 1)">
                           <i class="bi bi-dash-lg"></i>
@@ -85,7 +87,9 @@
                     </div>
                   </div>
                 </td>
-                <td class="td-price">@{{ item.price_format }}</td>
+                <td class="td-price">
+                  <span class="main-price">@{{ item.price_format }}</span>
+                </td>
                 <td class="td-quantity d-none d-lg-table-cell">
                   <div class="quantity-wrap" v-if="item.item_type === 'normal'">
                     <div class="minus" @click="updateQuantity(item.id, item.quantity - 1)">

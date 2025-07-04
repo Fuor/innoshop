@@ -2,9 +2,8 @@
 
 namespace Plugin\LadderPrice;
 
-use Plugin\LadderPrice\Listeners\ProductSaveListener;
+use Illuminate\Support\Facades\Log;
 use InnoShop\Common\Models\Product\Sku as SkuModel;
-use Plugin\LadderPrice\Middleware\HandleLadderPriceRequest;
 
 // 引入 Sku 模型
 
@@ -22,11 +21,18 @@ class Boot
             return '';
         });
 
-        // 3. 注册 resource.cart_list_item 钩子，用于在购物车列表生成时应用阶梯价
-        // 优先级设置为 10，确保在 CustomizationOptions 插件的 resource.cart_list_item 钩子之前执行
+        // 3. 注册 resource.cart_item 钩子，用于在购物车列表生成时应用阶梯价
+        // 优先级设置为 10，确保在 CustomizationOptions 插件的 resource.cart_item 钩子之前执行
         listen_hook_filter('resource.cart.item', function ($data) {
-            $sku              = $data['productSku'] ?? null; // 尝试从 $data 中获取 productSku
-            $cartItemQuantity = $data['quantity']; // 直接从 $data 中获取 quantity
+            // 直接从 $data 数组中获取 sku_id 和 quantity
+            $skuId            = $data['sku_id'] ?? null;
+            $cartItemQuantity = $data['quantity'] ?? 0;
+
+            $sku = null;
+            if ($skuId) {
+                // 从数据库中加载完整的 Sku 模型，包含 ladder_prices
+                $sku = SkuModel::find($skuId);
+            }
 
             // 计算阶梯价格并更新主商品价格
             if ($sku && is_array($sku->ladder_prices) && !empty($sku->ladder_prices)) {

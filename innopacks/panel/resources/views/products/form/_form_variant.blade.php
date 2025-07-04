@@ -98,15 +98,15 @@
           <tr>
             <th style="min-width: 220px">
               <div class="batch-input-item mb-2">
-                {{ __('panel/product.batch_fill') }}
+                {{ __('panel/product.bulk_fill') }}
               </div>
               {{ __('panel/product.variant') }}
             </th>
             <th>
               <div class="batch-input-item mb-2">
                 <div class="input-group input-group-sm">
-                  <input type="text" class="form-control" v-model="batchData.skuPrefix" placeholder="{{ __('panel/product.batch_fill_sku') }}">
-                  <button class="btn btn-outline-primary" type="button" @click="batchFillSkuCode">{{ __('panel/product.batch_fill_apply') }}</button>
+                  <input type="text" class="form-control" v-model="batchData.skuPrefix" placeholder="{{ __('panel/product.bulk_fill_sku') }}">
+                  <button class="btn btn-outline-primary" type="button" @click="batchFillSkuCode">{{ __('panel/product.bulk_fill_apply') }}</button>
                 </div>
               </div>
               SKU Code
@@ -114,9 +114,9 @@
             <th>
               <div class="batch-input-item mb-2">
                 <div class="input-group input-group-sm">
-                  <input type="number" class="form-control" v-model="batchData.price" placeholder="{{ __('panel/product.batch_fill_price') }}"
+                  <input type="number" class="form-control" v-model="batchData.price" placeholder="{{ __('panel/product.bulk_fill_price') }}"
                          min="0" @input="validateBatchPrice">
-                  <button class="btn btn-outline-primary" type="button" @click="batchFillColumn('price')">{{ __('panel/product.batch_fill_apply') }}</button>
+                  <button class="btn btn-outline-primary" type="button" @click="batchFillColumn('price')">{{ __('panel/product.bulk_fill_apply') }}</button>
                 </div>
               </div>
               {{ __('panel/product.price') }}
@@ -124,9 +124,9 @@
             <th>
               <div class="batch-input-item mb-2">
                 <div class="input-group input-group-sm">
-                  <input type="number" class="form-control" v-model="batchData.originPrice" placeholder="{{ __('panel/product.batch_fill_origin_price') }}"
+                  <input type="number" class="form-control" v-model="batchData.originPrice" placeholder="{{ __('panel/product.bulk_fill_origin_price') }}"
                          min="0" @input="validateBatchOriginPrice">
-                  <button class="btn btn-outline-primary" type="button" @click="batchFillColumn('originPrice')">{{ __('panel/product.batch_fill_apply') }}</button>
+                  <button class="btn btn-outline-primary" type="button" @click="batchFillColumn('originPrice')">{{ __('panel/product.bulk_fill_apply') }}</button>
                 </div>
               </div>
               {{ __('panel/product.origin_price') }}
@@ -134,8 +134,8 @@
             <th>
               <div class="batch-input-item mb-2">
                 <div class="input-group input-group-sm">
-                  <input type="text" class="form-control" v-model="batchData.model" placeholder="{{ __('panel/product.batch_fill_model') }}">
-                  <button class="btn btn-outline-primary" type="button" @click="batchFillColumn('model')">{{ __('panel/product.batch_fill_apply') }}</button>
+                  <input type="text" class="form-control" v-model="batchData.model" placeholder="{{ __('panel/product.bulk_fill_model') }}">
+                  <button class="btn btn-outline-primary" type="button" @click="batchFillColumn('model')">{{ __('panel/product.bulk_fill_apply') }}</button>
                 </div>
               </div>
               {{ __('panel/product.model') }}
@@ -143,9 +143,9 @@
             <th>
               <div class="batch-input-item mb-2">
                 <div class="input-group input-group-sm">
-                  <input type="number" class="form-control" v-model="batchData.quantity" placeholder="{{ __('panel/product.batch_fill_quantity') }}"
+                  <input type="number" class="form-control" v-model="batchData.quantity" placeholder="{{ __('panel/product.bulk_fill_quantity') }}"
                          min="0" @input="validateBatchQuantity">
-                  <button class="btn btn-outline-primary" type="button" @click="batchFillColumn('quantity')">{{ __('panel/product.batch_fill_apply') }}</button>
+                  <button class="btn btn-outline-primary" type="button" @click="batchFillColumn('quantity')">{{ __('panel/product.bulk_fill_apply') }}</button>
                 </div>
               </div>
               {{ __('panel/product.quantity') }}
